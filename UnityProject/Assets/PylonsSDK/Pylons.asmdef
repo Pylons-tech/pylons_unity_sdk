@@ -1,0 +1,15 @@
+{
+    "name": "Pylons",
+    "references": [
+        "GUID:42ba365f6b9ffc848b09b2996fc71b9c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
