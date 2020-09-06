@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PylonsSDK.Tx
+namespace PylonsSdk.Tx
 {
     public readonly struct StdSignature
     {

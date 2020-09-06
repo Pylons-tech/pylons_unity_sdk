@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace PylonsSDK.Tx.Msg
+namespace PylonsSdk.Tx.Msg
 {
     public readonly struct SendItems
     {

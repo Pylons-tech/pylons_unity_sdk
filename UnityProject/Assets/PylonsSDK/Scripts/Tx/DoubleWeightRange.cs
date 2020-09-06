@@ -1,4 +1,4 @@
-﻿namespace PylonsSDK.Tx
+﻿namespace PylonsSdk.Tx
 {
     public readonly struct DoubleWeightRange
     {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace PylonsSDK.Tx
+namespace PylonsSdk.Tx
 {
     public readonly struct DoubleInputParam
     {

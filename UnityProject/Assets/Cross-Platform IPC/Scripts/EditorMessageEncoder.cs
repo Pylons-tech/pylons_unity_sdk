@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.Security.AccessControl;
 using Debug = UnityEngine.Debug;
 
-namespace CrossPlatformIPC
+namespace CrossPlatformIpc
 {
     public class EditorMessageEncoder : MessageEncoder
     {
@@ -105,16 +105,16 @@ namespace CrossPlatformIPC
 
             private void StartTargetExe ()
             {
-                Debug.Log(IPCManager.target);
-                if (IPCManager.target.devProcessIsHosted)
+                Debug.Log(IpcManager.target);
+                if (IpcManager.target.devProcessIsHosted)
                 {
-                    Debug.Log(IPCManager.target.devProcessHostedStartArguments);
-                    TargetProcess = Process.Start(IPCManager.target.devProcessHostPath, IPCManager.target.devProcessHostedStartArguments);
+                    Debug.Log(IpcManager.target.devProcessHostedStartArguments);
+                    TargetProcess = Process.Start(IpcManager.target.devProcessHostPath, IpcManager.target.devProcessHostedStartArguments);
                     TargetHostProcess = TargetProcess;
                 }
                 else
                 {
-                    TargetProcess = Process.Start(IPCManager.target.devProcessPath, IPCManager.target.devProcessArguments);
+                    TargetProcess = Process.Start(IpcManager.target.devProcessPath, IpcManager.target.devProcessArguments);
                     TargetHostProcess = null;
                 }
             }
@@ -161,8 +161,8 @@ namespace CrossPlatformIPC
                     }
                 }
                 else Shutdown();
-                if (IPCManager.target.devProcessIsHosted && (TargetHostProcess == null || TargetHostProcess.HasExited || !TargetHostProcess.Responding)) Shutdown();
-                if (IPCManager.target.devProcessIsHosted && (TargetHostProcess == null || TargetHostProcess.HasExited || !TargetHostProcess.Responding)) Shutdown();
+                if (IpcManager.target.devProcessIsHosted && (TargetHostProcess == null || TargetHostProcess.HasExited || !TargetHostProcess.Responding)) Shutdown();
+                if (IpcManager.target.devProcessIsHosted && (TargetHostProcess == null || TargetHostProcess.HasExited || !TargetHostProcess.Responding)) Shutdown();
             }
 
             private void Main ()
@@ -183,7 +183,7 @@ namespace CrossPlatformIPC
                         }
                         while (tcpClient?.Connected != true)
                         {
-                            Debug.Log($"Connecting to 127.0.0.1:{IPCManager.target.devProcessComPort}...");
+                            Debug.Log($"Connecting to 127.0.0.1:{IpcManager.target.devProcessComPort}...");
 
                             const double timeout = 10;
 
@@ -191,7 +191,7 @@ namespace CrossPlatformIPC
                             var timeoutDate = DateTime.Now.AddSeconds(timeout);
                             try
                             {
-                                tcpClient = new TcpClient("127.0.0.1", IPCManager.target.devProcessComPort);
+                                tcpClient = new TcpClient("127.0.0.1", IpcManager.target.devProcessComPort);
                             }
                             catch (Exception e)
                             {

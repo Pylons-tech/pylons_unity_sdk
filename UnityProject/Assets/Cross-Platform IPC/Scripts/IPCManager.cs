@@ -1,11 +1,11 @@
 ﻿using System;
 using UnityEngine;
-using CrossPlatformIPC;
+using CrossPlatformIpc;
 
-public class IPCManager : MonoBehaviour
+public class IpcManager : MonoBehaviour
 {
-    public static IPCManager current { get; private set; }
-    public static IPCTarget target { get; private set; }
+    public static IpcManager current { get; private set; }
+    public static IpcTarget target { get; private set; }
     private bool anticipatingMessage;
     private MessageEncoder outgoingMessage;
     private event EventHandler<IncomingMessageEventArgs> onOutgoingMessageGet;
@@ -25,12 +25,12 @@ public class IPCManager : MonoBehaviour
     {
 #if !UNITY_WEBGL
         current = this;
-        SetIpcTarget(IPCTarget.instance);
+        SetIpcTarget(IpcTarget.instance);
         onCurrentExists?.Invoke(this, EventArgs.Empty);
 #endif
     }
 
-    public static void SetIpcTarget (IPCTarget _target)
+    public static void SetIpcTarget (IpcTarget _target)
     {
         target = _target;
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -45,7 +45,7 @@ public class IPCManager : MonoBehaviour
 
     void Update ()
     {
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR_WIN || (UNITY_STANDALONE_WIN && DEBUG)
         if (EditorMessageEncoder.IOEngine.exceptions.Count > 0)
         {
             Exception e = EditorMessageEncoder.IOEngine.exceptions.First.Value;
@@ -64,7 +64,7 @@ public class IPCManager : MonoBehaviour
     {
 #if !UNITY_WEBGL
         string receivedMsg;
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR_WIN || (UNITY_STANDALONE_WIN && DEBUG)
         if (EditorMessageEncoder.TryReceive(out receivedMsg))
 #elif UNITY_ANDROID
         if (AndroidMessageEncoder.TryReceive(out receivedMsg))

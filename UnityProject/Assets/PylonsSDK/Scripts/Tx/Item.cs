@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace PylonsSDK.Tx
+namespace PylonsSdk.Tx
 {
     public readonly struct Item
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
-namespace PylonsSDK.Tx
+namespace PylonsSdk.Tx
 {
     public readonly struct Recipe
     {

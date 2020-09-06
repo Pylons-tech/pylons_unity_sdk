@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CrossPlatformIPC
+namespace CrossPlatformIpc
 {
     public abstract class MessageEncoder
     {

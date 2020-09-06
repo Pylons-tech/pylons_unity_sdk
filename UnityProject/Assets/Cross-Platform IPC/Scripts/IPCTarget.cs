@@ -1,12 +1,12 @@
-﻿namespace CrossPlatformIPC
+﻿namespace CrossPlatformIpc
 {
-    public abstract class IPCTarget
+    public abstract class IpcTarget
     {
-        public static IPCTarget instance;
+        public static IpcTarget instance;
 
-        static IPCTarget ()
+        static IpcTarget ()
         {
-            instance = DefaultIPCTarget.Get();
+            instance = DefaultIpcTarget.Get();
         }
 
         public readonly string androidActivityName;
@@ -20,7 +20,7 @@
         public readonly bool devProcessIsHosted;
         public readonly int devProcessComPort;
 
-        public IPCTarget (string _androidActivityName, string _androidPackageName, string _androidServiceName, string _devProcessArguments, int _devProcessComPort, string _devProcessName, string _devProcessPath)
+        public IpcTarget (string _androidActivityName, string _androidPackageName, string _androidServiceName, string _devProcessArguments, int _devProcessComPort, string _devProcessName, string _devProcessPath)
         {
             androidActivityName = _androidActivityName;
             androidPackageName = _androidPackageName;
@@ -34,7 +34,7 @@
             devProcessComPort = _devProcessComPort;
         }
 
-        public IPCTarget(string _androidActivityName, string _androidPackageName, string _androidServiceName, string _devProcessArguments, int _devProcessComPort, string _devProcessName, string _devProcessPath,
+        public IpcTarget(string _androidActivityName, string _androidPackageName, string _androidServiceName, string _devProcessArguments, int _devProcessComPort, string _devProcessName, string _devProcessPath,
             string _devProcessHostPath, string _devProcessHostedStartArguments)
         {
             androidActivityName = _androidActivityName;

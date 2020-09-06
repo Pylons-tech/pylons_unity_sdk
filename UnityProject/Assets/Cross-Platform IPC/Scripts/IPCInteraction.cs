@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CrossPlatformIPC
+namespace CrossPlatformIpc
 {
-    public class IPCInteraction
+    public class IpcInteraction
     {
-        private static Queue<IPCInteraction> ipcInteractionDispatchQueue = new Queue<IPCInteraction>();
+        private static Queue<IpcInteraction> ipcInteractionDispatchQueue = new Queue<IpcInteraction>();
 
-        public class IPCInteractionEventArgs : EventArgs
+        public class IpcInteractionEventArgs : EventArgs
         {
-            public readonly IPCInteraction interaction;
+            public readonly IpcInteraction interaction;
 
-            public IPCInteractionEventArgs(IPCInteraction _interaction) => interaction = _interaction;
+            public IpcInteractionEventArgs(IpcInteraction _interaction) => interaction = _interaction;
         }
 
-        public event EventHandler<IPCInteractionEventArgs> OnSubmit;
-        public event EventHandler<IPCInteractionEventArgs> OnResolution;
+        public event EventHandler<IpcInteractionEventArgs> OnSubmit;
+        public event EventHandler<IpcInteractionEventArgs> OnResolution;
         protected string outgoingMessage = null;
         public string receivedMessage { get; private set; } = null;
         protected PassedException receivedError = null;
@@ -27,7 +27,7 @@ namespace CrossPlatformIPC
         private bool awaitingResponseToSubmittedMessage = false;
 
 
-        public IPCInteraction (string msg)
+        public IpcInteraction (string msg)
         {
             outgoingMessage = msg;
         }
@@ -35,17 +35,17 @@ namespace CrossPlatformIPC
 
         private void Submit ()
         {
-            OnSubmit?.Invoke(this, new IPCInteractionEventArgs(this));
+            OnSubmit?.Invoke(this, new IpcInteractionEventArgs(this));
             PreSubmit();
             UnityEngine.Debug.Log($"Firing {GetType().Name}");
             encoder.Send(outgoingMessage);
             awaitingResponseToSubmittedMessage = true;
-            IPCManager.PrepareToReceiveMessage((sender, args) => {
+            IpcManager.PrepareToReceiveMessage((sender, args) => {
                 UnityEngine.Debug.Log("Submit-time callback firing");
                 awaitingResponseToSubmittedMessage = false;
                 receivedMessage = args.message;
                 if (receivedMessage != null) UnityEngine.Debug.Log("Received message");
-                var evtArgs = new IPCInteractionEventArgs(this);
+                var evtArgs = new IpcInteractionEventArgs(this);
                 Resolution();
                 OnResolution?.Invoke(this, evtArgs);
                 if (ipcInteractionDispatchQueue.Count > 0)

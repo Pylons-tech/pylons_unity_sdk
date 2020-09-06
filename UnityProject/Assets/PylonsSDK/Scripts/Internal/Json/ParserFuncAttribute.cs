@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 
-namespace PylonsSDK.Internal.Json
+namespace PylonsSdk.Internal.Json
 {
     public sealed class ParserFuncAttribute : Attribute
     {

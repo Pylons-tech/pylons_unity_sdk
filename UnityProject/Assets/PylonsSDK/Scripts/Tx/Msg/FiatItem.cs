@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace PylonsSDK.Tx.Msg
+namespace PylonsSdk.Tx.Msg
 {
     public readonly struct FiatItem
     {

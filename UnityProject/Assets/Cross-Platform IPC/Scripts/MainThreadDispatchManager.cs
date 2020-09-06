@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading;
-using Universe;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-public class MainThreadDispatchManager : Manager<MainThreadDispatchManager>
+public class MainThreadDispatchManager : MonoBehaviour
 {
     private static event EventHandler recurring;
     private static event EventHandler oneShot;

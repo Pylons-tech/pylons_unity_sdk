@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Reflection;
 
-namespace CrossPlatformIPC
+namespace CrossPlatformIpc
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class DefaultIPCTarget : Attribute
+    public class DefaultIpcTarget : Attribute
     {
-        public DefaultIPCTarget ()
+        public DefaultIpcTarget ()
         {
 
         }
 
-        public static IPCTarget Get ()
+        public static IpcTarget Get ()
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 var types = assembly.GetTypes();
-                foreach (var type in types) if (type.IsDefined(typeof(DefaultIPCTarget)))
-                        return type.GetConstructor(new Type[] { }).Invoke(new object[] { }) as IPCTarget;
+                foreach (var type in types) if (type.IsDefined(typeof(DefaultIpcTarget)))
+                        return type.GetConstructor(new Type[] { }).Invoke(new object[] { }) as IpcTarget;
             }
             return null;
         }

@@ -1,4 +1,4 @@
-﻿namespace CrossPlatformIPC
+﻿namespace CrossPlatformIpc
 {
     public enum ResultCode
     {
