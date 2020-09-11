@@ -1,0 +1,15 @@
+{
+  "name": "com.pylons.unity.sdk.core",
+  "version": "0.1.0",
+  "displayName": "Pylons SDK for Unity (Core)",
+  "description": "Blockchain and IPC tools for creating games that run on the Pylons chain in Unity",
+  "unity": "2020.1",
+  "author": {
+    "email": "not.a@valid.email",
+    "name": "Pylons LLC",
+    "url": "https://example.com"
+  },
+  "dependencies": {
+    "jillejr.newtonsoft.json-for-unity": "12.0.301"
+  }
+}

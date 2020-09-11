@@ -1,0 +1,17 @@
+{
+    "name": "PylonsSdk.Core.Runtime",
+    "references": [
+        "GUID:42ba365f6b9ffc848b09b2996fc71b9c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

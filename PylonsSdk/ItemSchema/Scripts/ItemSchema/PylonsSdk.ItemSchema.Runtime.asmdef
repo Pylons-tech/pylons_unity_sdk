@@ -1,0 +1,17 @@
+{
+    "name": "PylonsSdk.ItemSchema.Runtime",
+    "references": [
+        "GUID:6dda88f14a9957d49baad9aeb491825e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
