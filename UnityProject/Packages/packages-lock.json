@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.pylons.ipc": {
+      "version": "file:D:/contracting/pylons_unity_sdk/PylonsIpc/Unity",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "jillejr.newtonsoft.json-for-unity": "12.0.301"
+      }
+    },
     "com.pylons.unity.sdk.core": {
       "version": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/Core",
       "depth": 0,
