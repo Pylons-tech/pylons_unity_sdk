@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CrossPlatformIpc
+namespace PylonsIpc
 {
     public abstract class MessageEncoder
     {
@@ -9,8 +9,8 @@ namespace CrossPlatformIpc
 
         public static MessageEncoder Create ()
         {
-#if UNITY_EDITOR
-                    return new EditorMessageEncoder();
+#if UNITY_EDITOR || (UNITY_STANDALONE && DEBUG)
+                    return new DebugMessageEncoder();
 #elif UNITY_ANDROID
                     return AndroidMessageEncoder.Prepare();
 #else

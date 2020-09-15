@@ -1,55 +1,58 @@
 ﻿using System;
 using UnityEngine;
-using CrossPlatformIpc;
+using PylonsIpc;
 
-public class IpcManager : MonoBehaviour
+namespace PylonsIpc
 {
-    public static IpcManager current { get; private set; }
-    public static IpcTarget target { get; private set; }
-    private bool anticipatingMessage;
-    private MessageEncoder outgoingMessage;
-    private event EventHandler<IncomingMessageEventArgs> onOutgoingMessageGet;
-    private static event EventHandler onCurrentExists;
 
-    public class IncomingMessageEventArgs : EventArgs
+    public class IpcManager : MonoBehaviour
     {
-        public readonly string message;
+        public static IpcManager current { get; private set; }
+        public static IpcTarget target { get; private set; }
+        private bool anticipatingMessage;
+        private MessageEncoder outgoingMessage;
+        private event EventHandler<IncomingMessageEventArgs> onOutgoingMessageGet;
+        private static event EventHandler onCurrentExists;
 
-        public IncomingMessageEventArgs (string m)
+        public class IncomingMessageEventArgs : EventArgs
         {
-            message = m;
+            public readonly string message;
+
+            public IncomingMessageEventArgs(string m)
+            {
+                message = m;
+            }
         }
-    }
 
-    void Awake ()
-    {
+        void Awake()
+        {
 #if !UNITY_WEBGL
-        current = this;
-        SetIpcTarget(IpcTarget.instance);
-        onCurrentExists?.Invoke(this, EventArgs.Empty);
+            current = this;
+            SetIpcTarget(IpcTarget.instance);
+            onCurrentExists?.Invoke(this, EventArgs.Empty);
 #endif
-    }
+        }
 
-    public static void SetIpcTarget (IpcTarget _target)
-    {
-        target = _target;
+        public static void SetIpcTarget(IpcTarget _target)
+        {
+            target = _target;
 #if UNITY_ANDROID && !UNITY_EDITOR
         AndroidMessageEncoder.ConformAndroidSideToIpcTarget(target);
 #endif
-    }
+        }
 
-    void OnDestroy()
-    {
-        if (current == this) current = null;
-    }
-
-    void Update ()
-    {
-#if UNITY_EDITOR_WIN || (UNITY_STANDALONE_WIN && DEBUG)
-        if (EditorMessageEncoder.IOEngine.exceptions.Count > 0)
+        void OnDestroy()
         {
-            Exception e = EditorMessageEncoder.IOEngine.exceptions.First.Value;
-            EditorMessageEncoder.IOEngine.exceptions.RemoveFirst();
+            if (current == this) current = null;
+        }
+
+        void Update()
+        {
+#if UNITY_EDITOR && (UNITY_STANDALONE && DEBUG)
+        if (DebugMessageEncoder.IOEngine.exceptions.Count > 0)
+        {
+            Exception e = DebugMessageEncoder.IOEngine.exceptions.First.Value;
+            DebugMessageEncoder.IOEngine.exceptions.RemoveFirst();
             if (e.GetType() != typeof(System.Threading.ThreadAbortException)) // ThreadAbortException is thrown to kill the thread, but it's not actually anything to worry about
             {
                 Debug.LogError(e.StackTrace);
@@ -57,38 +60,39 @@ public class IpcManager : MonoBehaviour
             }
         }
 #endif
-        if (anticipatingMessage) CheckIfIncomingMessageObtained();
-    }
+            if (anticipatingMessage) CheckIfIncomingMessageObtained();
+        }
 
-    private void CheckIfIncomingMessageObtained ()
-    {
+        private void CheckIfIncomingMessageObtained()
+        {
 #if !UNITY_WEBGL
-        string receivedMsg;
-#if UNITY_EDITOR_WIN || (UNITY_STANDALONE_WIN && DEBUG)
-        if (EditorMessageEncoder.TryReceive(out receivedMsg))
+            string receivedMsg;
+#if UNITY_EDITOR || (UNITY_STANDALONE && DEBUG)
+        if (DebugMessageEncoder.TryReceive(out receivedMsg))
 #elif UNITY_ANDROID
         if (AndroidMessageEncoder.TryReceive(out receivedMsg))
 #endif
 
-        {
-            anticipatingMessage = false;
-            onOutgoingMessageGet?.Invoke(this, new IncomingMessageEventArgs(receivedMsg));
-            onOutgoingMessageGet = null;
-        }
+            {
+                anticipatingMessage = false;
+                onOutgoingMessageGet?.Invoke(this, new IncomingMessageEventArgs(receivedMsg));
+                onOutgoingMessageGet = null;
+            }
 #endif
-    }
+        }
 
-    public static void PrepareToReceiveMessage (EventHandler<IncomingMessageEventArgs> msgCallback)
-    {
-#if !UNITY_WEBGL
-        void action ()
+        public static void PrepareToReceiveMessage(EventHandler<IncomingMessageEventArgs> msgCallback)
         {
-            current.onOutgoingMessageGet += msgCallback;
-            current.anticipatingMessage = true;
-        }
-        Debug.Log($"have current ipc manager: {current != null}");
-        if (current != null) action();
-        else onCurrentExists += (s, e) => action();
+#if !UNITY_WEBGL
+            void action()
+            {
+                current.onOutgoingMessageGet += msgCallback;
+                current.anticipatingMessage = true;
+            }
+            Debug.Log($"have current ipc manager: {current != null}");
+            if (current != null) action();
+            else onCurrentExists += (s, e) => action();
 #endif
+        }
     }
 }

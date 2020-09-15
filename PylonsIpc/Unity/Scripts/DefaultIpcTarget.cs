@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace CrossPlatformIpc
+namespace PylonsIpc
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class DefaultIpcTarget : Attribute

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CrossPlatformIpc
+namespace PylonsIpc
 {
     public class IpcInteraction
     {

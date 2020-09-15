@@ -5,21 +5,24 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class MainThreadDispatchManager : MonoBehaviour
+namespace PylonsIpc
 {
-    private static event EventHandler recurring;
-    private static event EventHandler oneShot;
-    private static Mutex recurringDispatchEventMutex = new Mutex(false);
-    private static Mutex oneShotDispatchEventMutex = new Mutex(false);
 
-    void Update() => PumpEvents();
-
-    private static void PumpEvents ()
+    public class MainThreadDispatchManager : MonoBehaviour
     {
-        recurring?.Invoke(null, EventArgs.Empty);
-        oneShot?.Invoke(null, EventArgs.Empty);
-        oneShot = null;
-    }
+        private static event EventHandler recurring;
+        private static event EventHandler oneShot;
+        private static Mutex recurringDispatchEventMutex = new Mutex(false);
+        private static Mutex oneShotDispatchEventMutex = new Mutex(false);
+
+        void Update() => PumpEvents();
+
+        private static void PumpEvents()
+        {
+            recurring?.Invoke(null, EventArgs.Empty);
+            oneShot?.Invoke(null, EventArgs.Empty);
+            oneShot = null;
+        }
 
 #if UNITY_EDITOR
     private static bool hooked = false;
@@ -37,17 +40,18 @@ public class MainThreadDispatchManager : MonoBehaviour
     }
 #endif
 
-    public static void DispatchRecurring (EventHandler eventHandler)
-    {
-        recurringDispatchEventMutex.WaitOne();
-        recurring += eventHandler;
-        recurringDispatchEventMutex.ReleaseMutex();
-    }
+        public static void DispatchRecurring(EventHandler eventHandler)
+        {
+            recurringDispatchEventMutex.WaitOne();
+            recurring += eventHandler;
+            recurringDispatchEventMutex.ReleaseMutex();
+        }
 
-    public static void Dispatch (EventHandler eventHandler)
-    {
-        oneShotDispatchEventMutex.WaitOne();
-        oneShot += eventHandler;
-        oneShotDispatchEventMutex.ReleaseMutex();
+        public static void Dispatch(EventHandler eventHandler)
+        {
+            oneShotDispatchEventMutex.WaitOne();
+            oneShot += eventHandler;
+            oneShotDispatchEventMutex.ReleaseMutex();
+        }
     }
 }

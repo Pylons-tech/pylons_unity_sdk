@@ -2,8 +2,8 @@
 
 namespace PylonsSdk.Internal
 {
-    [CrossPlatformIpc.DefaultIpcTarget]
-    public class PylonsIpcTarget : CrossPlatformIpc.IpcTarget
+    [PylonsIpc.DefaultIpcTarget]
+    public class PylonsIpcTarget : PylonsIpc.IpcTarget
     {
         public PylonsIpcTarget() : base(
             ".activities.CoreInterfaceActivity",
@@ -12,9 +12,9 @@ namespace PylonsSdk.Internal
                 "fromClient",
                 50001,
                 "pylons_dwallet",
-                "/DevWallet/pylons_dwallet.exe",
+                GetRealPathToDevProcess("Packages/com.pylons.sdk.devwallet/pylons_dwallet.exe"),
                 "cmd.exe",
-                string.Join("", @"/k """"", Application.dataPath.Replace("/Assets", ""), $@"/DevWallet/pylons_dwallet.exe"" {GetAddress()}"""))
+                string.Join("", @"/k """"", GetRealPathToDevProcess("Packages/com.pylons.unity.sdk.devwallet/pylons_dwallet.exe"), $" {GetAddress()}"))
         {
             Debug.Log("Set up PylonsIpcTarget");
         }

@@ -10,6 +10,7 @@
     "url": "https://example.com"
   },
   "dependencies": {
+    "com.pylons.unity.sdk.devwallet": "0.1.0",
     "jillejr.newtonsoft.json-for-unity": "12.0.301"
   }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using CrossPlatformIpc;
+using PylonsIpc;
 
 namespace PylonsSdk.Internal.Ipc
 {
