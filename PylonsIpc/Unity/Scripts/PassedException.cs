@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PassedException
+namespace PylonsIpc
 {
-    public readonly string JvmException;
-    public readonly string Message;
-    public readonly string StackTrace;
-
-    public PassedException(string jvmException, string message, string stackTrace)
+    public class PassedException
     {
-        JvmException = jvmException;
-        Message = message;
-        StackTrace = stackTrace;
+        public readonly string JvmException;
+        public readonly string Message;
+        public readonly string StackTrace;
+
+        public PassedException(string jvmException, string message, string stackTrace)
+        {
+            JvmException = jvmException;
+            Message = message;
+            StackTrace = stackTrace;
+        }
     }
 }

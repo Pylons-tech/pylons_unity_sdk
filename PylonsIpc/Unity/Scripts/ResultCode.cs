@@ -1,4 +1,4 @@
-﻿namespace CrossPlatformIpc
+﻿namespace PylonsIpc
 {
     public enum ResultCode
     {

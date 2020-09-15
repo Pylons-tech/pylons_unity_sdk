@@ -1,4 +1,11 @@
-﻿namespace CrossPlatformIpc
+﻿
+using System.Text;
+using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor.PackageManager;
+#endif
+
+namespace PylonsIpc
 {
     public abstract class IpcTarget
     {
@@ -48,6 +55,35 @@
             devProcessHostedStartArguments = _devProcessHostedStartArguments;
             devProcessComPort = _devProcessComPort;
         }
+
+
+        public static string GetRealPathToDevProcess(string devProcessPath)
+        {
+#if UNITY_EDITOR
+            var defaultVal = Application.dataPath.Replace("/Assets", "") + "/" + devProcessPath;
+            var split = devProcessPath.Split(new char[] { '\\', '/' });
+            if (split[0] == ("Packages"))
+            {
+                var packages = Client.List();
+                while (!packages.IsCompleted) { } // idle wait is slow but this will be moved to a codegen pass so it doesn't matter
+                foreach (var package in packages.Result)
+                {
+                    if (package.name == split[1])
+                    {
+                        var sb = new StringBuilder(package.resolvedPath);
+                        for (int i = 2; i < split.Length; i++) sb.Append($"\\{split[i]}");
+                        return sb.ToString();
+                    }
+                }
+                return defaultVal;
+            }
+            else return defaultVal;
+            return devProcessPath;
+#else
+            // This API doesn't exist outside of editor. This doesn't matter b/c this path is only used in editor; this call will
+            // just be compiled out.
+            return devProcessPath;
+#endif
+        }
     }
 }
-

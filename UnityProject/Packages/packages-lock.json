@@ -13,8 +13,15 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
+        "com.pylons.unity.sdk.devwallet": "0.1.0",
         "jillejr.newtonsoft.json-for-unity": "12.0.301"
       }
+    },
+    "com.pylons.unity.sdk.devwallet": {
+      "version": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/DevWallet",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
     },
     "com.pylons.unity.sdk.itemschema": {
       "version": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/ItemSchema",

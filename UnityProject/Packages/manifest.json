@@ -2,6 +2,7 @@
   "dependencies": {
     "com.pylons.ipc": "file:D:/contracting/pylons_unity_sdk/PylonsIpc/Unity",
     "com.pylons.unity.sdk.core": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/Core",
+    "com.pylons.unity.sdk.devwallet": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/DevWallet",
     "com.pylons.unity.sdk.itemschema": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/ItemSchema",
     "com.unity.burst": "1.3.6",
     "com.unity.collab-proxy": "1.3.9",

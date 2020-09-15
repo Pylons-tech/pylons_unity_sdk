@@ -1,0 +1,14 @@
+{
+  "name": "com.pylons.unity.sdk.devwallet",
+  "version": "0.1.0",
+  "displayName": "Pylons SDK for Unity (DevWallet)",
+  "description": "Lightweight desktop Pylons wallet for use in the Unity editor and with debug builds",
+  "unity": "2020.1",
+  "author": {
+    "email": "not.a@valid.email",
+    "name": "Pylons LLC",
+    "url": "https://example.com"
+  },
+  "dependencies": {
+  }
+}
