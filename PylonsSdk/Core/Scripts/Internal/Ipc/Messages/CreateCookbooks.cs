@@ -1,17 +1,5 @@
 ﻿using Newtonsoft.Json;
-using PylonsSdk.Internal.Ipc;
-using PylonsSdk.Internal.Ipc.Messages;
 using System;
-
-namespace PylonsSdk
-{
-    public static partial class Service
-    {
-        public static void CreateCookbooks(string[] ids, string[] names, string[] developers, string[] descriptions, 
-            string[] versions, string[] supportEmails, long[] levels, long[] costsPerBlock, params IpcEvent[] evts) =>
-            new CreateCookbooks(ids, names, developers, descriptions, versions, supportEmails, levels, costsPerBlock).Broadcast(evts);
-    }
-}
 
 namespace PylonsSdk.Internal.Ipc.Messages
 {

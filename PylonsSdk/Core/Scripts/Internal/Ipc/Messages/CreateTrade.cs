@@ -1,16 +1,5 @@
 ﻿using Newtonsoft.Json;
-using PylonsSdk.Internal.Ipc;
-using PylonsSdk.Internal.Ipc.Messages;
 using System;
-
-namespace PylonsSdk
-{
-    public static partial class Service
-    {
-        public static void CreateTrade(string[] coinInputs, string[] itemInputs, string[] coinOutputs, string[] itemOutputs, string extraInfo, params IpcEvent[] evts) =>
-            new CreateTrade(coinInputs, itemInputs, coinOutputs, itemOutputs, extraInfo).Broadcast(evts);
-    }
-}
 
 namespace PylonsSdk.Internal.Ipc.Messages
 {

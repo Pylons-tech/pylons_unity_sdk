@@ -3,10 +3,19 @@ using PylonsSdk.Internal.Ipc;
 using PylonsSdk.Internal.Ipc.Messages;
 using PylonsSdk.Tx;
 using Newtonsoft.Json;
+using System;
+using PylonsIpc;
+using System.Threading;
 
-public class Pylons : MonoBehaviour
+/// <summary>
+/// Provides a higher-level API for making calls into the wallet application, and takes care of
+/// boilerplate of creating IPC messages, ensuring channel state is valid before submitting, etc.
+/// It's strongly recommended that you use PylonsService to do IPC calls even if you're not
+/// interrested in moodules like ItemSchema, ProfileTools, etc.
+/// </summary>
+public class PylonsService : MonoBehaviour
 {
-    public static Pylons instance { get; private set; }
+    public static PylonsService instance { get; private set; }
 
     private void Awake()
     {
@@ -20,11 +29,17 @@ public class Pylons : MonoBehaviour
     public delegate void TxEvent(object caller, Transaction[] txs);
     public delegate void WalletServiceTestEvent(object caller, string output);
 
+    public void DoOnceSane(Action callback)
+    {
+        if (DebugMessageEncoder.IOEngine.Instance.state != DebugMessageEncoder.IOEngine.State.Ready) DebugMessageEncoder.IOEngine.DoWhenSafe(callback);
+        else callback();
+    }
+
     private void TxEventMessageHandler(IpcMessage msg, TxEvent evt) =>
-        msg.Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((TxResponse)e).Transactions); } });
+        DoOnceSane(() => msg.Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((TxResponse)e).Transactions); } }));
 
     public void ApplyRecipe(string recipe, string cookbook, string[] itemInputs, TxEvent evt) =>
-       TxEventMessageHandler(new ApplyRecipe(recipe, cookbook, itemInputs), evt);
+        TxEventMessageHandler(new ApplyRecipe(recipe, cookbook, itemInputs), evt);
 
     public void CancelTrade(string tradeId, TxEvent evt) =>
         TxEventMessageHandler(new CancelTrade(tradeId), evt);
@@ -51,13 +66,13 @@ public class Pylons : MonoBehaviour
         TxEventMessageHandler(new FulfillTrade(tradeId, itemIds), evt);
 
     public void GetCookbooks(CookbookEvent evt) =>
-        new GetCookbooks().Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((CookbookResponse)e).Cookbooks); } });
+        DoOnceSane(() => new GetCookbooks().Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((CookbookResponse)e).Cookbooks); } }));
 
     public void GetPendingExecutions(ExecutionEvent evt) =>
-        new GetPendingExecutions().Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((ExecutionResponse)e).Executions); } });
+        DoOnceSane(() => new GetPendingExecutions().Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((ExecutionResponse)e).Executions); } }));
 
     public void GetProfile(string id, ProfileEvent evt) =>
-        new GetProfile(id).Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((ProfileResponse)e).Profiles[0]); } });
+        DoOnceSane(() => new GetProfile(id).Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((ProfileResponse)e).Profiles[0]); } }));
 
     public void GetPylons(long count, TxEvent evt) =>
 #if DEBUG
@@ -70,7 +85,7 @@ public class Pylons : MonoBehaviour
     // separate GoogleIapGetPylons IPC call does not need to exist.
 
     public void GetRecipes(RecipeEvent evt) =>
-        new GetRecipes().Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((RecipeResponse)e).Recipes); } });
+        DoOnceSane(() => new GetRecipes().Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((RecipeResponse)e).Recipes); } }));
 
     public void GetTransaction(string txHash, TxEvent evt) =>
         TxEventMessageHandler(new GetTransaction(txHash), evt);
@@ -88,11 +103,11 @@ public class Pylons : MonoBehaviour
         TxEventMessageHandler(new UpdateCookbooks(ids, names, developers, descriptions, versions, supportEmails), evt);
 
     public void UpdateRecipes(string[] ids, string[] names, string[] cookbooks, string[] decriptions, long[] blockIntervals, string[] coinInputs, string[] itemInputs, string[] outputTables, string[] outputs, TxEvent evt) =>
-        TxEventMessageHandler(new UpdateRecipes(ids, names, cookbooks, decriptions, blockIntervals, coinInputs, itemInputs, outputTables, outputs), evt);    
+        TxEventMessageHandler(new UpdateRecipes(ids, names, cookbooks, decriptions, blockIntervals, coinInputs, itemInputs, outputTables, outputs), evt);
 
-    public void WalletServiceTest(string input, WalletServiceTestEvent evt) => 
-        new WalletServiceTest(input).Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((TestResponse)e).Output); } });
+    public void WalletServiceTest(string input, WalletServiceTestEvent evt) =>
+        DoOnceSane(() => new WalletServiceTest(input).Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((TestResponse)e).Output); } }));
 
     public void WalletUiTest(string input, WalletServiceTestEvent evt) =>
-        new WalletUiTest(input).Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((TestResponse)e).Output); } });
+        DoOnceSane(() => new WalletUiTest(input).Broadcast(new IpcEvent[] { (s, e) => { evt.Invoke(s, ((TestResponse)e).Output); } }));
 }

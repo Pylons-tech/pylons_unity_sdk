@@ -4,18 +4,13 @@ using PylonsSdk.Tx;
 
 class Foo : UnityEngine.MonoBehaviour
 {
-    void Awake ()
+    void Start ()
     {
-        PylonsSdk.Service.WalletServiceTest("foo", Ev1, Ev2, Ev1);
+        PylonsService.instance.WalletServiceTest("foo", Ev1);
     }
 
     void Ev1 (object sender, object response)
     {
         UnityEngine.Debug.Log("ev1");
-    }
-
-    void Ev2(object sender, object response)
-    {
-        UnityEngine.Debug.Log("ev2");
     }
 }

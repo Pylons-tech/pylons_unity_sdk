@@ -1,10 +1,14 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PylonsIpc;
 
 namespace PylonsSdk.Internal.Ipc
 {
     public abstract class IpcMessage
     {
+        private readonly int MessageId = new Random().Next();
+
         protected enum ResponseType
         {
             NONE = 0,
@@ -24,41 +28,50 @@ namespace PylonsSdk.Internal.Ipc
 
         protected IpcMessage(ResponseType rt) => responseType = rt;
 
-        private string Serialize() => Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        private string Serialize() => JsonConvert.SerializeObject(this);
 
         public void Broadcast(IpcEvent[] evts)
         {
+            if (DebugMessageEncoder.WalletId == 0) throw new Exception("Handshake hasn't been done yet. Wait for connection state to become sane before sending messages.");
             foreach (var evt in evts) onResolution += evt;
-            var msg = Serialize();
-            msg = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(msg));
-            var json = $"{{ \"type\":\"{GetType().Name}\", \"msg\":\"{msg}\" }}";
-            var interaction = new IpcInteraction(json);
+            var interaction = new IpcInteraction(new
+            {
+                type = GetType().Name,
+                msg = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(Serialize())),
+                messageId = MessageId,
+                clientId = DebugMessageEncoder.ClientId,
+                walletId = DebugMessageEncoder.WalletId
+            });
             interaction.OnResolution += HandleResponse;
             interaction.Resolve();
         }
 
-        private static T DeserializeResponse<T>(string json) => Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
-
-        private object ParseResponse(string responseJson)
+        private object ParseResponse(string response)
         {
+            var obj = JsonConvert.DeserializeObject(response) as dynamic;
+            // TODO: validate the response
+            var responseData = (JObject)obj.responseData;
+            if (obj.clientId != DebugMessageEncoder.ClientId || obj.messageId != MessageId || obj.walletId != DebugMessageEncoder.WalletId)
+                throw new Exception("Client/Message/Wallet ID mismatch");
+
             switch (responseType)
             {
                 case ResponseType.TEST_RESPONSE:
-                    return DeserializeResponse<TestResponse>(responseJson);
+                    return responseData.ToObject<TestResponse>();
                 case ResponseType.TX_RESPONSE:
-                    return DeserializeResponse<TxResponse>(responseJson);
+                    return responseData.ToObject<TxResponse>();
                 case ResponseType.PROFILE_RESPONSE:
-                    return DeserializeResponse<ProfileResponse>(responseJson);
+                    return responseData.ToObject<ProfileResponse>();
                 case ResponseType.ITEM_RESPONSE:
-                    return DeserializeResponse<ItemResponse>(responseJson);
+                    return responseData.ToObject<ItemResponse>();
                 case ResponseType.RECIPE_RESPONSE:
-                    return DeserializeResponse<RecipeResponse>(responseJson);
+                    return responseData.ToObject<RecipeResponse>();
                 case ResponseType.COOKBOOK_RESPONSE:
-                    return DeserializeResponse<CookbookResponse>(responseJson);
+                    return responseData.ToObject<CookbookResponse>();
                 case ResponseType.TRADE_RESPONSE:
-                    return DeserializeResponse<TradeResponse>(responseJson);
+                    return responseData.ToObject<TradeResponse>();
                 case ResponseType.EXECUTION_RESPONSE:
-                    throw new NotImplementedException();
+                    return responseData.ToObject<ExecutionResponse>();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(responseType));
             }

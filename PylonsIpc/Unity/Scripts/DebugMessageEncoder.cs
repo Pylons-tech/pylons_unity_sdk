@@ -16,6 +16,9 @@ namespace PylonsIpc
 {
     public class DebugMessageEncoder : MessageEncoder
     {
+        public readonly static int ClientId = new Random().Next();
+        public static int WalletId { get; private set; }
+
         public class IOEngine
         {
             public enum State
@@ -28,7 +31,7 @@ namespace PylonsIpc
 
             public State state { get; private set; } = State.WaitForHandshake;
             private event EventHandler onReady;
-            private TcpClient tcpClient;
+            private event EventHandler onSafe;
             private Thread thread;
             public static LinkedList<Exception> exceptions = new LinkedList<Exception>();
             public static IOEngine Instance { get; private set; }
@@ -38,10 +41,10 @@ namespace PylonsIpc
             private FileSystemAccessRule accessRule = new FileSystemAccessRule("Users", FileSystemRights.FullControl, AccessControlType.Allow);
             public static bool AttachedToWallet => Instance?.TargetProcess != null && !Instance.TargetProcess.HasExited;
             public static string exportedResponse;
+            private byte[] lastSent;
+            private bool busy;
 
             private static bool TargetIsRunning => !Instance?.TargetProcess?.HasExited ?? false;
-
-            static long totalBytesWritten = 0;
 
             static IOEngine() => Start();
 
@@ -169,6 +172,118 @@ namespace PylonsIpc
                 if (IpcManager.target.devProcessIsHosted && (TargetHostProcess == null || TargetHostProcess.HasExited || !TargetHostProcess.Responding)) Shutdown();
             }
 
+            private byte[] GetBytes(DateTime timeoutDate = default)
+            {
+                const double timeout = 10;
+                if (timeoutDate == default) timeoutDate = DateTime.Now.AddSeconds(timeout);
+                try
+                {
+                    Thread.Sleep(2500);
+                    using (var tcpClient = new TcpClient("127.0.0.1", IpcManager.target.devProcessComPort))
+                    {
+                        Debug.Log($"Connecting to 127.0.0.1:{IpcManager.target.devProcessComPort}...");
+                        using (var s = tcpClient.GetStream())
+                        {
+                            while (!s.DataAvailable)
+                            {
+                                Thread.Sleep(100);
+                                if (DateTime.Now > timeoutDate) throw new TimeoutException("Timed out waiting for data");
+                            }
+                            Debug.Log("Starting read");
+                            byte[] lenBuffer = new byte[4];
+                            var l = s.Read(lenBuffer, 0, 4);
+                            if (l != 4) throw new Exception($"expected a 32-bit integer (4 octets), got {l} bytes down instead");
+                            var len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(lenBuffer, 0));
+                            Debug.Log($"Reading {len} bytes");
+                            byte[] dataBuffer = new byte[len]; // 512kb is overkill
+                            l = s.Read(dataBuffer, 0, dataBuffer.Length);
+                            Debug.Log($"{l} bytes down!\n{Encoding.ASCII.GetString(dataBuffer)}");
+                            if (l == 0) return null;
+                            tcpClient.Close();
+                            busy = false;
+                            return dataBuffer;
+                        }
+                    }
+                }
+                catch (SocketException e)
+                {
+                    if (e.SocketErrorCode == SocketError.ConnectionRefused)
+                    {
+                        if (DateTime.Now > timeoutDate) throw new TimeoutException(e.Message);
+                        else return GetBytes(timeoutDate);
+                    }
+                    else
+                    {
+                        busy = false;
+                        throw e;
+                    }
+                }
+                catch (TimeoutException e)
+                {
+                    Debug.LogError("Couldn't connect to IPC target before timeout");
+                    busy = false;
+                    throw e;
+                }
+                catch (Exception e)
+                {
+                    exceptions.AddFirst(e);
+                    busy = false;
+                    throw e;
+                }
+            }
+
+            private void SendBytes(byte[] bytes, DateTime timeoutDate = default)
+            {
+                const double timeout = 10;
+                if (timeoutDate == default) timeoutDate = DateTime.Now.AddSeconds(timeout);
+                try
+                {           
+                    Debug.Log($"Connecting to 127.0.0.1:{IpcManager.target.devProcessComPort}...");
+                    Debug.Log("(SEND)");
+                    using (var tcpClient = new TcpClient("127.0.0.1", IpcManager.target.devProcessComPort))
+                    {
+                        using (var s = tcpClient.GetStream())
+                        {
+                            // send bytes
+                            byte[] lenBytes = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(bytes.Length));
+                            byte[] data = new byte[lenBytes.Length + bytes.Length];
+                            lenBytes.CopyTo(data, 0);
+                            bytes.CopyTo(data, lenBytes.Length);
+                            Debug.Log($"Start write... ({data.Length}) bytes | {Encoding.ASCII.GetString(bytes)}");
+                            s.Write(data, 0, data.Length);
+                            s.Flush();
+                            Debug.Log("Write complete");
+                            busy = false;
+                        }
+                    }
+                }
+                catch (SocketException e)
+                {
+                    if (e.SocketErrorCode == SocketError.ConnectionRefused)
+                    {
+                        if (DateTime.Now > timeoutDate) throw new TimeoutException(e.Message);
+                        else SendBytes(bytes, timeoutDate);
+                    }
+                    else
+                    {
+                        busy = false;
+                        throw e;
+                    }
+                }
+                catch (TimeoutException e)
+                {
+                    Debug.LogError("Couldn't connect to IPC target before timeout");
+                    busy = false;
+                    throw e;
+                }
+                catch (Exception e)
+                {
+                    exceptions.AddFirst(e);
+                    busy = false;
+                    throw e;
+                }
+            }
+
             private void Main ()
             {
                 try
@@ -185,40 +300,26 @@ namespace PylonsIpc
                             state = State.WaitForHandshake;
                             StartTargetExe();
                         }
-                        while (tcpClient?.Connected != true)
-                        {
-                            Debug.Log($"Connecting to 127.0.0.1:{IpcManager.target.devProcessComPort}...");
-
-                            const double timeout = 10;
-
-                            var lastRetry = DateTime.Now;
-                            var timeoutDate = DateTime.Now.AddSeconds(timeout);
-                            try
-                            {
-                                tcpClient = new TcpClient("127.0.0.1", IpcManager.target.devProcessComPort);
-                            }
-                            catch (Exception e)
-                            {
-                                if (DateTime.Now > timeoutDate)
-                                {
-                                    Debug.LogError("Couldn't connect to IPC target before timeout");
-                                    throw e;
-                                }
-                            }
-                        }
+                        Debug.Log(state);
                         switch (state)
                         {
                             case State.WaitForHandshake:
-                                if (CheckForHandshake()) state = State.Ready;
-                                else Debug.Log("Handshake w/ server failed");
+                                if (CheckForHandshake())
+                                {
+                                    state = State.Ready;
+                                    onSafe?.Invoke(this, EventArgs.Empty);
+                                    onSafe = null;                                 
+                                }
+                                else Debug.LogError("Handshake w/ server failed");
                                 break;
                             case State.Ready:
-                                if (onReady != null)
+                                if (busy) Thread.Sleep(250);
+                                else if (onReady != null)
                                 {
                                     onReady.Invoke(null, EventArgs.Empty);
                                     if (onReadyQueue.Count > 0) onReady = onReadyQueue.Dequeue();
                                     else onReady = null;
-                                    state = State.AwaitingRespoonse;
+                                    busy = true;
                                 }
                                 else Thread.Sleep(250);
                                 break;
@@ -248,31 +349,15 @@ namespace PylonsIpc
             private const string HANDSHAKE_MAGIC = "__PYLONS_WALLET_SERVER";
             private const string HANDSHAKE_REPLY_MAGIC = "__PYLONS_WALLET_CLIENT";
 
-            private bool NextMessageEqualsString(string str)
-            {
-                try
-                {
-                    byte[] m = ReadNext();
-                    if (m == null) return false;
-                    string s = Encoding.ASCII.GetString(m);
-                    return s == str;
-                }
-                catch (Exception e)
-                {
-                    exceptions.AddFirst(e);
-                    throw e;
-                }
-            }
-
             private bool CheckForHandshake()
             {
-                Debug.Log("Connected!");
-                byte[] m = ReadNext();
+                byte[] m = GetBytes();
                 if (m == null) return false;
                 byte[] handshakeMagicBytes = Encoding.ASCII.GetBytes(HANDSHAKE_MAGIC);
-                if (m.Length != handshakeMagicBytes.Length + 8)
+                var lenExpected = handshakeMagicBytes.Length + 8 + 4;
+                if (m.Length != lenExpected)
                 {
-                    Debug.Log("Wrong msg length " + m.Length);
+                    Debug.Log($"Wrong length - got {m.Length}; expected {lenExpected}");
                     return false;
                 }
                 byte[] mHandshake = new byte[handshakeMagicBytes.Length];
@@ -282,79 +367,58 @@ namespace PylonsIpc
                     Debug.Log("Wrong handshake");
                     return false;
                 }
-                int pid = (int)IPAddress.HostToNetworkOrder(BitConverter.ToInt64(m, mHandshake.Length));
-                TargetProcess = Process.GetProcessById(pid);
                 Debug.Log("Got handshake magic!");
-                WriteBytes(Encoding.ASCII.GetBytes(HANDSHAKE_REPLY_MAGIC));
-                return true;
+                WalletId = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(m, mHandshake.Length));
+                Debug.Log("Got wallet ID!");
+                int pid = (int)IPAddress.HostToNetworkOrder(BitConverter.ToInt64(m, mHandshake.Length + 4));
+                Debug.Log("Got PID!");
+                TargetProcess = Process.GetProcessById(pid);
+                ExecuteHandshakeReply();
+                return HandshakeAccepted();
+            }
+
+            private bool HandshakeAccepted() => Encoding.ASCII.GetString(GetBytes()) == "OKfillerfillerfillerfillerfillerfiller";
+
+            private void ExecuteHandshakeReply()
+            {
+                SendBytes(Encoding.ASCII.GetBytes($"{HANDSHAKE_REPLY_MAGIC}{ClientId}"));
+                Debug.Log($"{HANDSHAKE_REPLY_MAGIC}{ClientId}");
             }
 
             private bool CheckForResponse(out string msg)
             {
-                Debug.Log("Looking for incoming message...");
+                Debug.Log("Awaiting response...");
                 msg = ReadMessageFromPipe();
                 if (msg != null)
                 {
-                    Debug.Log("Got incoming message!");
+                    Debug.Log("Got response!");
                     LogIncomingMessageToFilesystem(msg);
                 }
                 return msg != null;
             }
 
-            private byte[] ReadNext()
-            {           
-                try
-                {
-                    Debug.Log("Starting read");
-                    NetworkStream s = tcpClient.GetStream();
-                    while (s.ReadByte() == -1) Thread.Sleep(100);
-                    byte[] buffer = new byte[1024 * 512]; // 512kb is overkill
-                    int len = s.Read(buffer, 0, buffer.Length);
-                    Debug.Log(len + " bytes down");
-                    if (len == 0) return null;
-                    byte[] m = new byte[len];
-                    for (int i = 0; i < len; i++) m[i] = buffer[i];
-                    return m;
-                }
-                catch (Exception e)
-                {
-                    exceptions.AddFirst(e);
-                    throw e;
-                }
-            }
-
-            private void WriteBytes(byte[] bytes)
-            {
-                try
-                {
-                    totalBytesWritten += bytes.Length;
-                    Debug.Log($"Start write... ({bytes.Length}) bytes | {Encoding.ASCII.GetString(bytes)} | {totalBytesWritten}");
-                    NetworkStream s = tcpClient.GetStream();
-                    s.WriteByte(0xFF); // meaningless, just prepending message w/ an irrelevant byte so we can use ReadByte() to check for stream end w/o losing data
-                    s.Write(bytes, 0, bytes.Length);
-                    s.Flush();
-                    Debug.Log("Write complete");
-                }
-                catch (Exception e)
-                {
-                    exceptions.AddFirst(e);
-                    throw e;
-                }
-            }
-
-            private string ReadMessageFromPipe() => Encoding.ASCII.GetString(ReadNext());
+            private string ReadMessageFromPipe() => Encoding.ASCII.GetString(GetBytes());
 
             private void SendMessageToPipe(string m)
             {
                 LogOutgoingMessageToFilesystem(m);
-                WriteBytes(Encoding.ASCII.GetBytes(m));
+                SendBytes(Encoding.ASCII.GetBytes(m));
+                state = State.AwaitingRespoonse;
             }
 
             public void SendOncePossible (string msg)
             {
+                Debug.Log("SendOncePossible hit");
                 EventHandler action = (s, e) => SendMessageToPipe(msg);
+                Debug.Log(onReady == null);
+                Debug.Log(state);
                 if (onReady == null) onReady += action;
                 else onReadyQueue.Enqueue(action);
+            }
+
+            public static void DoWhenSafe (Action callback)
+            {
+                Instance.onSafe += (s, e) => callback();
             }
 
         }

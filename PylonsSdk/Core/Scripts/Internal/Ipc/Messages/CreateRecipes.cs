@@ -1,17 +1,5 @@
 ﻿using Newtonsoft.Json;
-using PylonsSdk.Internal.Ipc;
-using PylonsSdk.Internal.Ipc.Messages;
 using System;
-
-namespace PylonsSdk
-{
-    public static partial class Service
-    {
-        public static void CreateRecipes(string[] names, string[] cookbooks, string[] decriptions, long[] blockIntervals,
-            string[] coinInputs, string[] itemInputs, string[] outputTables, string[] outputs, params IpcEvent[] evts) =>
-            new CreateRecipes(names, cookbooks, decriptions, blockIntervals, coinInputs, itemInputs, outputTables, outputs).Broadcast(evts);
-    }
-}
 
 namespace PylonsSdk.Internal.Ipc.Messages
 {

@@ -1,15 +1,4 @@
 ﻿using Newtonsoft.Json;
-using PylonsSdk.Internal.Ipc;
-using PylonsSdk.Internal.Ipc.Messages;
-
-namespace PylonsSdk
-{
-    public static partial class Service
-    {
-        public static void GoogleIapGetPylons(string productId, string purchaseToken, string receiptData, string signature, params IpcEvent[] evts) => 
-            new GoogleIapGetPylons(productId, purchaseToken, receiptData, signature).Broadcast(evts);
-    }
-}
 
 namespace PylonsSdk.Internal.Ipc.Messages
 {

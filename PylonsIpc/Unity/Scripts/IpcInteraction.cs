@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace PylonsIpc
@@ -16,7 +17,7 @@ namespace PylonsIpc
 
         public event EventHandler<IpcInteractionEventArgs> OnSubmit;
         public event EventHandler<IpcInteractionEventArgs> OnResolution;
-        protected string outgoingMessage = null;
+        protected dynamic outgoingMessage = null;
         public string receivedMessage { get; private set; } = null;
         protected PassedException receivedError = null;
         protected virtual void PreSubmit() { }
@@ -27,7 +28,7 @@ namespace PylonsIpc
         private bool awaitingResponseToSubmittedMessage = false;
 
 
-        public IpcInteraction (string msg)
+        public IpcInteraction (dynamic msg)
         {
             outgoingMessage = msg;
         }
@@ -37,8 +38,9 @@ namespace PylonsIpc
         {
             OnSubmit?.Invoke(this, new IpcInteractionEventArgs(this));
             PreSubmit();
-            UnityEngine.Debug.Log($"Firing {GetType().Name}");
-            encoder.Send(outgoingMessage);
+            var json = JsonConvert.SerializeObject(outgoingMessage);
+            UnityEngine.Debug.Log($"Firing: {json}");
+            encoder.Send(json);
             awaitingResponseToSubmittedMessage = true;
             IpcManager.PrepareToReceiveMessage((sender, args) => {
                 UnityEngine.Debug.Log("Submit-time callback firing");
