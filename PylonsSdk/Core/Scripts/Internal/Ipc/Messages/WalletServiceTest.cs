@@ -1,15 +1,5 @@
 ﻿using Newtonsoft.Json;
-using PylonsSdk.Internal.Ipc;
-using PylonsSdk.Internal.Ipc.Messages;
 using System;
-
-namespace PylonsSdk
-{
-    public static partial class Service
-    {
-        public static void WalletServiceTest(string input, params IpcEvent[] evts) => new WalletServiceTest(input).Broadcast(evts);
-    }
-}
 
 namespace PylonsSdk.Internal.Ipc.Messages
 {
@@ -20,6 +10,7 @@ namespace PylonsSdk.Internal.Ipc.Messages
 
         public WalletServiceTest(string input) : base(ResponseType.TEST_RESPONSE)
         {
+            UnityEngine.Debug.Log("constructor hit");
             Input = input ?? throw new ArgumentNullException(nameof(input));
         }
     }

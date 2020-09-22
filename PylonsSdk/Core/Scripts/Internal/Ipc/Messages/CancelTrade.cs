@@ -1,16 +1,5 @@
 ﻿using Newtonsoft.Json;
-using PylonsSdk.Internal.Ipc;
-using PylonsSdk.Internal.Ipc.Messages;
 using System;
-
-namespace PylonsSdk
-{
-    public static partial class Service
-    {
-        public static void CancelTrade(string tradeId, params IpcEvent[] evts) =>
-            new CancelTrade(tradeId).Broadcast(evts);
-    }
-}
 
 namespace PylonsSdk.Internal.Ipc.Messages
 {

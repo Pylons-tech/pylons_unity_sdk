@@ -10,7 +10,7 @@ namespace PylonsIpc
         public static IpcManager current { get; private set; }
         public static IpcTarget target { get; private set; }
         private bool anticipatingMessage;
-        private MessageEncoder outgoingMessage;
+        private IpcChannel outgoingMessage;
         private event EventHandler<IncomingMessageEventArgs> onOutgoingMessageGet;
         private static event EventHandler onCurrentExists;
 
@@ -49,10 +49,10 @@ namespace PylonsIpc
         void Update()
         {
 #if UNITY_EDITOR && (UNITY_STANDALONE && DEBUG)
-        if (DebugMessageEncoder.IOEngine.exceptions.Count > 0)
+        if (IpcChannelDebugHttp.IOEngine.exceptions.Count > 0)
         {
-            Exception e = DebugMessageEncoder.IOEngine.exceptions.First.Value;
-            DebugMessageEncoder.IOEngine.exceptions.RemoveFirst();
+            Exception e = IpcChannelDebugHttp.IOEngine.exceptions.First.Value;
+            IpcChannelDebugHttp.IOEngine.exceptions.RemoveFirst();
             if (e.GetType() != typeof(System.Threading.ThreadAbortException)) // ThreadAbortException is thrown to kill the thread, but it's not actually anything to worry about
             {
                 Debug.LogError(e.StackTrace);
@@ -68,7 +68,7 @@ namespace PylonsIpc
 #if !UNITY_WEBGL
             string receivedMsg;
 #if UNITY_EDITOR || (UNITY_STANDALONE && DEBUG)
-        if (DebugMessageEncoder.TryReceive(out receivedMsg))
+        if (IpcChannelDebugHttp.TryReceive(out receivedMsg))
 #elif UNITY_ANDROID
         if (AndroidMessageEncoder.TryReceive(out receivedMsg))
 #endif

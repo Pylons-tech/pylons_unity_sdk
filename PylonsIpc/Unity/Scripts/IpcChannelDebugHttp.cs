@@ -14,7 +14,7 @@ using Debug = UnityEngine.Debug;
 
 namespace PylonsIpc
 {
-    public class DebugMessageEncoder : MessageEncoder
+    public class IpcChannelDebugHttp : IpcChannel
     {
         public readonly static int ClientId = new Random().Next();
         public static int WalletId { get; private set; }
@@ -31,13 +31,11 @@ namespace PylonsIpc
 
             public State state { get; private set; } = State.WaitForHandshake;
             private event EventHandler onReady;
-            private event EventHandler onSafe;
             private Thread thread;
             public static LinkedList<Exception> exceptions = new LinkedList<Exception>();
             public static IOEngine Instance { get; private set; }
             public Process TargetProcess { get; private set; }
             public Process TargetHostProcess { get; private set; }
-            private Queue<EventHandler> onReadyQueue = new Queue<EventHandler>();
             private FileSystemAccessRule accessRule = new FileSystemAccessRule("Users", FileSystemRights.FullControl, AccessControlType.Allow);
             public static bool AttachedToWallet => Instance?.TargetProcess != null && !Instance.TargetProcess.HasExited;
             public static string exportedResponse;
@@ -174,19 +172,31 @@ namespace PylonsIpc
 
             private byte[] GetBytes(DateTime timeoutDate = default)
             {
-                const double timeout = 10;
+                // HACK/TO-DO: This Thread.Sleep() dodges a timing bug. I'm not sure what the source of it is. This is obviously not a good
+                // enough solution though, so we need to identify why DataAvailable below sometimes hangs if we don't
+                // do this.
+                Thread.Sleep(1000);
+                const double timeout = 30;
                 if (timeoutDate == default) timeoutDate = DateTime.Now.AddSeconds(timeout);
                 try
                 {
-                    Thread.Sleep(2500);
                     using (var tcpClient = new TcpClient("127.0.0.1", IpcManager.target.devProcessComPort))
                     {
                         Debug.Log($"Connecting to 127.0.0.1:{IpcManager.target.devProcessComPort}...");
+                        Debug.Log("(GET)");
+                        while (!tcpClient.Connected)
+                        {
+                            Debug.Log("Waiting for connection; retry in 250ms");
+                            Thread.Sleep(250);
+                            if (DateTime.Now > timeoutDate) throw new TimeoutException("Timed out waiting for connection");
+                        }
                         using (var s = tcpClient.GetStream())
                         {
+                            Debug.Log("Connected!");
                             while (!s.DataAvailable)
                             {
-                                Thread.Sleep(100);
+                                Debug.Log("No data available; retry in 250ms");
+                                Thread.Sleep(250);
                                 if (DateTime.Now > timeoutDate) throw new TimeoutException("Timed out waiting for data");
                             }
                             Debug.Log("Starting read");
@@ -242,6 +252,7 @@ namespace PylonsIpc
                     Debug.Log("(SEND)");
                     using (var tcpClient = new TcpClient("127.0.0.1", IpcManager.target.devProcessComPort))
                     {
+                        Debug.Log("Connected!");
                         using (var s = tcpClient.GetStream())
                         {
                             // send bytes
@@ -253,7 +264,6 @@ namespace PylonsIpc
                             s.Write(data, 0, data.Length);
                             s.Flush();
                             Debug.Log("Write complete");
-                            busy = false;
                         }
                     }
                 }
@@ -300,25 +310,23 @@ namespace PylonsIpc
                             state = State.WaitForHandshake;
                             StartTargetExe();
                         }
-                        Debug.Log(state);
                         switch (state)
                         {
                             case State.WaitForHandshake:
                                 if (CheckForHandshake())
                                 {
-                                    state = State.Ready;
-                                    onSafe?.Invoke(this, EventArgs.Empty);
-                                    onSafe = null;                                 
+                                    state = State.Ready;                      
                                 }
                                 else Debug.LogError("Handshake w/ server failed");
                                 break;
                             case State.Ready:
-                                if (busy) Thread.Sleep(250);
-                                else if (onReady != null)
+                                if (busy || IpcInteraction.awaitingResponseToSubmittedMessage) continue;
+                                IpcInteraction.ProcessQueue();
+                                if (onReady != null)
                                 {
-                                    onReady.Invoke(null, EventArgs.Empty);
-                                    if (onReadyQueue.Count > 0) onReady = onReadyQueue.Dequeue();
-                                    else onReady = null;
+                                    var del = onReady.GetInvocationList()[0] as EventHandler;
+                                    onReady -= del;
+                                    del.Invoke(this, EventArgs.Empty);
                                     busy = true;
                                 }
                                 else Thread.Sleep(250);
@@ -374,6 +382,7 @@ namespace PylonsIpc
                 Debug.Log("Got PID!");
                 TargetProcess = Process.GetProcessById(pid);
                 ExecuteHandshakeReply();
+                Debug.Log("Accepted?");
                 return HandshakeAccepted();
             }
 
@@ -381,6 +390,7 @@ namespace PylonsIpc
 
             private void ExecuteHandshakeReply()
             {
+                Debug.Log("Sending reply!");
                 SendBytes(Encoding.ASCII.GetBytes($"{HANDSHAKE_REPLY_MAGIC}{ClientId}"));
                 Debug.Log($"{HANDSHAKE_REPLY_MAGIC}{ClientId}");
             }
@@ -406,21 +416,7 @@ namespace PylonsIpc
                 state = State.AwaitingRespoonse;
             }
 
-            public void SendOncePossible (string msg)
-            {
-                Debug.Log("SendOncePossible hit");
-                EventHandler action = (s, e) => SendMessageToPipe(msg);
-                Debug.Log(onReady == null);
-                Debug.Log(state);
-                if (onReady == null) onReady += action;
-                else onReadyQueue.Enqueue(action);
-            }
-
-            public static void DoWhenSafe (Action callback)
-            {
-                Instance.onSafe += (s, e) => callback();
-            }
-
+            public void SendOncePossible(string msg) => onReady += (s, e) => SendMessageToPipe(msg);
         }
 
         public override void Send(string message)

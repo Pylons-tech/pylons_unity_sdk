@@ -5,7 +5,7 @@ using PylonsIpc;
 
 namespace PylonsSdk.Internal.Ipc
 {
-    public abstract class IpcMessage
+    public abstract class IpcMessage : IBroadcastable
     {
         private readonly int MessageId = new Random().Next();
 
@@ -30,17 +30,17 @@ namespace PylonsSdk.Internal.Ipc
 
         private string Serialize() => JsonConvert.SerializeObject(this);
 
-        public void Broadcast(IpcEvent[] evts)
+        public void Broadcast(params IpcEvent[] evts)
         {
-            if (DebugMessageEncoder.WalletId == 0) throw new Exception("Handshake hasn't been done yet. Wait for connection state to become sane before sending messages.");
+            if (IpcChannelDebugHttp.WalletId == 0) throw new Exception("Handshake hasn't been done yet. Wait for connection state to become sane before sending messages.");
             foreach (var evt in evts) onResolution += evt;
             var interaction = new IpcInteraction(new
             {
                 type = GetType().Name,
                 msg = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(Serialize())),
                 messageId = MessageId,
-                clientId = DebugMessageEncoder.ClientId,
-                walletId = DebugMessageEncoder.WalletId
+                clientId = IpcChannelDebugHttp.ClientId,
+                walletId = IpcChannelDebugHttp.WalletId
             });
             interaction.OnResolution += HandleResponse;
             interaction.Resolve();
@@ -48,12 +48,16 @@ namespace PylonsSdk.Internal.Ipc
 
         private object ParseResponse(string response)
         {
+            UnityEngine.Debug.Log($"ParseResponse({response})");
             var obj = JsonConvert.DeserializeObject(response) as dynamic;
             // TODO: validate the response
             var responseData = (JObject)obj.responseData;
-            if (obj.clientId != DebugMessageEncoder.ClientId || obj.messageId != MessageId || obj.walletId != DebugMessageEncoder.WalletId)
-                throw new Exception("Client/Message/Wallet ID mismatch");
-
+            if (obj.clientId != IpcChannelDebugHttp.ClientId || obj.messageId != MessageId || obj.walletId != IpcChannelDebugHttp.WalletId)
+            {
+                throw new Exception($"Failed to validate response." +
+                    $"\n (incoming) c: {obj.clientId} w: {obj.walletId} m: {obj.messageId}" +
+                    $"\n (expected) c: {IpcChannelDebugHttp.ClientId} {IpcChannelDebugHttp.WalletId} {MessageId}");
+            }
             switch (responseType)
             {
                 case ResponseType.TEST_RESPONSE:
