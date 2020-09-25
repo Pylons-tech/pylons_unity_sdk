@@ -14,11 +14,8 @@ using Debug = UnityEngine.Debug;
 
 namespace PylonsIpc
 {
-    public class IpcChannelDebugHttp : IpcChannel
+    internal class IpcChannelDebugHttp : IpcChannel
     {
-        public readonly static int ClientId = new Random().Next();
-        public static int WalletId { get; private set; }
-
         public class IOEngine
         {
             public enum State
@@ -184,12 +181,6 @@ namespace PylonsIpc
                     {
                         Debug.Log($"Connecting to 127.0.0.1:{IpcManager.target.devProcessComPort}...");
                         Debug.Log("(GET)");
-                        while (!tcpClient.Connected)
-                        {
-                            Debug.Log("Waiting for connection; retry in 250ms");
-                            Thread.Sleep(250);
-                            if (DateTime.Now > timeoutDate) throw new TimeoutException("Timed out waiting for connection");
-                        }
                         using (var s = tcpClient.GetStream())
                         {
                             Debug.Log("Connected!");
@@ -376,7 +367,7 @@ namespace PylonsIpc
                     return false;
                 }
                 Debug.Log("Got handshake magic!");
-                WalletId = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(m, mHandshake.Length));
+                HostId = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(m, mHandshake.Length));
                 Debug.Log("Got wallet ID!");
                 int pid = (int)IPAddress.HostToNetworkOrder(BitConverter.ToInt64(m, mHandshake.Length + 4));
                 Debug.Log("Got PID!");
@@ -419,13 +410,7 @@ namespace PylonsIpc
             public void SendOncePossible(string msg) => onReady += (s, e) => SendMessageToPipe(msg);
         }
 
-        public override void Send(string message)
-        {
-            // Before a release-worthy Windows build of _anything_ can happen, this will need to be less stupid.
-            // Right now it will never time out, which is fine for a dev app (start the wallet manually)
-            // but obviously not great for end users.
-            IOEngine.Instance.SendOncePossible(message);
-        }
+        public override void Send(string message) => IOEngine.Instance.SendOncePossible(message);
 
         public static bool TryReceive(out string receivedMsg)
         {

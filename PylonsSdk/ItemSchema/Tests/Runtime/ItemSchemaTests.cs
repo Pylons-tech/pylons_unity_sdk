@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 using Newtonsoft.Json;
-using PylonsSdk;
 using PylonsSdk.Tx;
 using UnityEngine;
 

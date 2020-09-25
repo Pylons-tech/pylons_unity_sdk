@@ -1,10 +1,12 @@
 ﻿using System;
-using UnityEngine;
 
 namespace PylonsIpc
 {
     public abstract class IpcChannel
     {
+        public readonly static int ClientId = new System.Random().Next();
+        public static int HostId { get; protected set; }
+
         public static bool Ready { get; private set; }
 
         public abstract void Send(string message);
@@ -14,7 +16,7 @@ namespace PylonsIpc
 #if UNITY_EDITOR || (UNITY_STANDALONE && DEBUG)
                     return new IpcChannelDebugHttp();
 #elif UNITY_ANDROID
-                    return AndroidMessageEncoder.Prepare();
+                    return new IpcChannelAndroid();
 #else
                     throw new NotImplementedException();
 #endif

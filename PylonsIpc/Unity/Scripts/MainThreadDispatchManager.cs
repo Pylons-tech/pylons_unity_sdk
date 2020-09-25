@@ -7,7 +7,6 @@ using UnityEditor;
 
 namespace PylonsIpc
 {
-
     public class MainThreadDispatchManager : MonoBehaviour
     {
         private static event EventHandler recurring;

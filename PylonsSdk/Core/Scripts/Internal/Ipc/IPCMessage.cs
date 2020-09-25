@@ -32,15 +32,15 @@ namespace PylonsSdk.Internal.Ipc
 
         public void Broadcast(params IpcEvent[] evts)
         {
-            if (IpcChannelDebugHttp.WalletId == 0) throw new Exception("Handshake hasn't been done yet. Wait for connection state to become sane before sending messages.");
+            if (IpcChannel.HostId == 0) throw new Exception("Handshake hasn't been done yet. Wait for connection state to become sane before sending messages.");
             foreach (var evt in evts) onResolution += evt;
             var interaction = new IpcInteraction(new
             {
                 type = GetType().Name,
                 msg = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(Serialize())),
                 messageId = MessageId,
-                clientId = IpcChannelDebugHttp.ClientId,
-                walletId = IpcChannelDebugHttp.WalletId
+                clientId = IpcChannel.ClientId,
+                walletId = IpcChannel.HostId
             });
             interaction.OnResolution += HandleResponse;
             interaction.Resolve();
@@ -52,11 +52,11 @@ namespace PylonsSdk.Internal.Ipc
             var obj = JsonConvert.DeserializeObject(response) as dynamic;
             // TODO: validate the response
             var responseData = (JObject)obj.responseData;
-            if (obj.clientId != IpcChannelDebugHttp.ClientId || obj.messageId != MessageId || obj.walletId != IpcChannelDebugHttp.WalletId)
+            if (obj.clientId != IpcChannel.ClientId || obj.messageId != MessageId || obj.hostId != IpcChannel.HostId)
             {
                 throw new Exception($"Failed to validate response." +
                     $"\n (incoming) c: {obj.clientId} w: {obj.walletId} m: {obj.messageId}" +
-                    $"\n (expected) c: {IpcChannelDebugHttp.ClientId} {IpcChannelDebugHttp.WalletId} {MessageId}");
+                    $"\n (expected) c: {IpcChannel.ClientId} {IpcChannel.HostId} {MessageId}");
             }
             switch (responseType)
             {

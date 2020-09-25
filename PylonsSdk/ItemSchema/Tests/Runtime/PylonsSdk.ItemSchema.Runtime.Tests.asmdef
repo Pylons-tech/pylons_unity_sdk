@@ -2,9 +2,9 @@
     "name": "PylonsSdk.ItemSchema.Runtime.Tests",
     "references": [
         "GUID:6dda88f14a9957d49baad9aeb491825e",
-        "GUID:7b676ddac07a8ac47b21fff9340addb3",
         "GUID:27619889b8ba8c24980f49ee34dbb44a",
-        "GUID:0acc523941302664db1f4e527237feb3"
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:c6a4fd3977e89ce46980e534b2025d40"
     ],
     "includePlatforms": [
         "Editor"
