@@ -1,13 +1,14 @@
 ﻿using System;
 using UnityEngine;
-using PylonsIpc;
+using Debug = UnityEngine.Debug;
+using System.Diagnostics;
 
 namespace PylonsIpc
 {
-
+    [ExecuteAlways]
     public class IpcManager : MonoBehaviour
     {
-        public static IpcManager current { get; private set; }
+        public static IpcManager instance { get; private set; }
         public static IpcTarget target { get; private set; }
         private bool anticipatingMessage;
         private IpcChannel outgoingMessage;
@@ -24,13 +25,22 @@ namespace PylonsIpc
             }
         }
 
+        void Initialize()
+        {
+            if (instance != null)
+            {
+                if (instance == this) return;
+                else throw new Exception("can't initialize a new ipcmanager when one already exists");
+            }
+            instance = this;
+            SetIpcTarget(IpcTarget.instance);
+            if (Application.isPlaying) DontDestroyOnLoad(this);
+            onCurrentExists?.Invoke(this, EventArgs.Empty);
+        }
+
         void Awake()
         {
-#if !UNITY_WEBGL
-            current = this;
-            SetIpcTarget(IpcTarget.instance);
-            onCurrentExists?.Invoke(this, EventArgs.Empty);
-#endif
+            if (instance == null) Initialize();
         }
 
         public static void SetIpcTarget(IpcTarget _target)
@@ -41,14 +51,20 @@ namespace PylonsIpc
 #endif
         }
 
+        void OnEnable()
+        {
+            if (instance == null) Initialize();
+        }
+
         void OnDestroy()
         {
-            if (current == this) current = null;
+            if (instance == this) instance = null;
         }
 
         void Update()
         {
 #if UNITY_EDITOR && (UNITY_STANDALONE && DEBUG)
+        if (instance == null) Awake(); // we have to call Awake() manually bc unity doesn't call it consistently in editor
         if (IpcChannelDebugHttp.IOEngine.exceptions.Count > 0)
         {
             Exception e = IpcChannelDebugHttp.IOEngine.exceptions.First.Value;
@@ -75,6 +91,7 @@ namespace PylonsIpc
 
             {
                 anticipatingMessage = false;
+                if (onOutgoingMessageGet != null) UnityEngine.Debug.Log(new StackTrace());
                 onOutgoingMessageGet?.Invoke(this, new IncomingMessageEventArgs(receivedMsg));
                 onOutgoingMessageGet = null;
             }
@@ -86,11 +103,10 @@ namespace PylonsIpc
 #if !UNITY_WEBGL
             void action()
             {
-                current.onOutgoingMessageGet += msgCallback;
-                current.anticipatingMessage = true;
+                instance.onOutgoingMessageGet += msgCallback;
+                instance.anticipatingMessage = true;
             }
-            Debug.Log($"have current ipc manager: {current != null}");
-            if (current != null) action();
+            if (instance != null) action();
             else onCurrentExists += (s, e) => action();
 #endif
         }

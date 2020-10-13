@@ -8,10 +8,6 @@ namespace PylonsSdk.Internal.Ipc.Messages
         [JsonProperty("input")]
         public readonly string Input;
 
-        public WalletServiceTest(string input) : base(ResponseType.TEST_RESPONSE)
-        {
-            UnityEngine.Debug.Log("constructor hit");
-            Input = input ?? throw new ArgumentNullException(nameof(input));
-        }
+        public WalletServiceTest(string input) : base(ResponseType.TEST_RESPONSE) => Input = input ?? throw new ArgumentNullException(nameof(input));
     }
 }

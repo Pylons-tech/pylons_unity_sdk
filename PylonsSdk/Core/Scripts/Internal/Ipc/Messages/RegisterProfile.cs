@@ -7,10 +7,13 @@ namespace PylonsSdk.Internal.Ipc.Messages
     {
         [JsonProperty("name")]
         public readonly string Name;
+        [JsonProperty("makeKeys")]
+        public readonly bool MakeKeys;
 
-        public RegisterProfile(string name) : base(ResponseType.TX_RESPONSE)
+        public RegisterProfile(string name, bool makeKeys) : base(ResponseType.TX_RESPONSE)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name = name;
+            MakeKeys = makeKeys;
         }
     }
 }

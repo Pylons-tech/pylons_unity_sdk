@@ -45,11 +45,8 @@ namespace PylonsSdk.Editor
             showNewestDateField.valueChanged.AddListener(Repaint);
         }
 
-        [MenuItem("Window/Wallet/Log Viewer")]
-        static void Init()
-        {
-            GetWindow<WalletLogViewer>().Show();
-        }
+        [MenuItem("Pylons/Wallet/Log Viewer")]
+        static void Init() => GetWindow<WalletLogViewer>().Show();
 
         const int SINGLE_ENTRY_HEIGHT = 64;
 

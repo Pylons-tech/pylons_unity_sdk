@@ -5,7 +5,7 @@ using PylonsSdk.Tx;
 using Newtonsoft.Json;
 using System;
 using PylonsIpc;
-using System.Threading;
+using System.Collections.Generic;
 
 /// <summary>
 /// Provides a higher-level API for making calls into the wallet application, and takes care of
@@ -13,13 +13,37 @@ using System.Threading;
 /// It's strongly recommended that you use PylonsService to do IPC calls even if you're not
 /// interrested in moodules like ItemSchema, ProfileTools, etc.
 /// </summary>
+[ExecuteAlways]
 public class PylonsService : MonoBehaviour
 {
     public static PylonsService instance { get; private set; }
+    public static event EventHandler onServiceLive;
 
-    private void Awake()
+    void Awake()
     {
+        if (instance == null) Initialize(); 
+    }
+
+    void OnEnable()
+    {
+        if (instance == null) Initialize();
+    }
+
+    void Initialize()
+    {
+        JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+        {
+            Converters = new List<JsonConverter> { new TxDataArrayConverter() }
+        };
+
+        if (instance != null)
+        {
+            if (instance == this) return;
+            else throw new Exception("can't initialize a new pylonsservice when one already exists");
+        }
         instance = this;
+        if (Application.isPlaying) DontDestroyOnLoad(this);       
+        onServiceLive?.Invoke(this, EventArgs.Empty);
     }
 
     public delegate void CookbookEvent(object caller, Cookbook[] cookbooks);
@@ -62,7 +86,7 @@ public class PylonsService : MonoBehaviour
 
     public void GetPendingExecutions(ExecutionEvent evt) => IpcInteraction.Stage(() => new GetPendingExecutions(), (s, e) => { evt.Invoke(s, ((ExecutionResponse)e).Executions); });
 
-    public void GetProfile(string id, ProfileEvent evt) => IpcInteraction.Stage(() => new GetProfile(id), (s, e) => { evt.Invoke(s, ((ProfileResponse)e).Profiles[0]); });
+    public void GetProfile(string id, ProfileEvent evt) => IpcInteraction.Stage(() => new GetProfile(id), (s, e) => { evt.Invoke(s, ((ProfileResponse)e).Profiles.GetFirst()); });
 
     public void GetPylons(long count, TxEvent evt) =>
 #if DEBUG
@@ -80,7 +104,7 @@ public class PylonsService : MonoBehaviour
         TxEventMessageHandler(() => new GetTransaction(txHash), evt);
 
     public void RegisterProfile(string name, TxEvent evt) =>
-        TxEventMessageHandler(() => new RegisterProfile(name), evt);
+        TxEventMessageHandler(() => new RegisterProfile(name, false), evt);
 
     public void SendCoins(string denom, long count, string receiver, TxEvent evt) =>
         TxEventMessageHandler(() => new SendCoins(JsonConvert.SerializeObject(new Coin[] { new Coin(denom, count) }), receiver), evt);

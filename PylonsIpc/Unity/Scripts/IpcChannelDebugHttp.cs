@@ -11,10 +11,11 @@ using UnityEditor;
 using System.Diagnostics;
 using System.Security.AccessControl;
 using Debug = UnityEngine.Debug;
+using UnityEngine;
 
 namespace PylonsIpc
 {
-    internal class IpcChannelDebugHttp : IpcChannel
+    public class IpcChannelDebugHttp : IpcChannel
     {
         public class IOEngine
         {
@@ -28,6 +29,7 @@ namespace PylonsIpc
 
             public State state { get; private set; } = State.WaitForHandshake;
             private event EventHandler onReady;
+            public event EventHandler onRestarted;
             private Thread thread;
             public static LinkedList<Exception> exceptions = new LinkedList<Exception>();
             public static IOEngine Instance { get; private set; }
@@ -105,20 +107,38 @@ namespace PylonsIpc
             }
 #endif
 
-            private void StartTargetExe ()
+            public void RestartTargetExe ()
             {
-                Debug.Log(IpcManager.target);
+                state = State.WaitForHandshake;
+                if (Instance.TargetProcess != null && !Instance.TargetProcess.HasExited) Instance.TargetProcess.Kill();
+                if (Instance.TargetHostProcess != null && !Instance.TargetHostProcess.HasExited) Instance.TargetHostProcess.Kill();
                 if (IpcManager.target.devProcessIsHosted)
                 {
-                    Debug.Log(IpcManager.target.devProcessHostedStartArguments);
-                    TargetProcess = Process.Start(IpcManager.target.devProcessHostPath, IpcManager.target.devProcessHostedStartArguments);
+                    TargetProcess = Process.Start(IpcManager.target.devProcessHostPath, IpcManager.target.GenerateDevProcessArguments(true));
                     TargetHostProcess = TargetProcess;
                 }
                 else
                 {
-                    TargetProcess = Process.Start(IpcManager.target.devProcessPath, IpcManager.target.devProcessArguments);
+                    TargetProcess = Process.Start(IpcManager.target.devProcessPath, IpcManager.target.GenerateDevProcessArguments(false));
                     TargetHostProcess = null;
                 }
+            }
+
+            private void StartTargetExe ()
+            {
+                MainThreadDispatchManager.Dispatch((s, e) =>
+                {
+                    if (IpcManager.target.devProcessIsHosted)
+                    {
+                        TargetProcess = Process.Start(IpcManager.target.devProcessHostPath, IpcManager.target.GenerateDevProcessArguments(true));
+                        TargetHostProcess = TargetProcess;
+                    }
+                    else
+                    {
+                        TargetProcess = Process.Start(IpcManager.target.devProcessPath, IpcManager.target.GenerateDevProcessArguments(false));
+                        TargetHostProcess = null;
+                    }
+                });
             }
 
             private void Shutdown ()
@@ -304,10 +324,7 @@ namespace PylonsIpc
                         switch (state)
                         {
                             case State.WaitForHandshake:
-                                if (CheckForHandshake())
-                                {
-                                    state = State.Ready;                      
-                                }
+                                if (CheckForHandshake()) state = State.Ready;
                                 else Debug.LogError("Handshake w/ server failed");
                                 break;
                             case State.Ready:
@@ -340,7 +357,6 @@ namespace PylonsIpc
 
             private void ExportResponse (string msg)
             {
-                Debug.Log($"Exporting response:\n{msg}");
                 exportedResponse = msg;
                 state = State.Ready;
             }

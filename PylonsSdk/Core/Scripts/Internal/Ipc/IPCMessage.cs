@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PylonsIpc;
@@ -19,7 +20,8 @@ namespace PylonsSdk.Internal.Ipc
             RECIPE_RESPONSE = 5,
             COOKBOOK_RESPONSE = 6,
             TRADE_RESPONSE = 7,
-            EXECUTION_RESPONSE = 8
+            EXECUTION_RESPONSE = 8,
+            KEY_RESPONSE = 9
         }
 
         private readonly ResponseType responseType;
@@ -48,15 +50,14 @@ namespace PylonsSdk.Internal.Ipc
 
         private object ParseResponse(string response)
         {
-            UnityEngine.Debug.Log($"ParseResponse({response})");
             var obj = JsonConvert.DeserializeObject(response) as dynamic;
             // TODO: validate the response
             var responseData = (JObject)obj.responseData;
-            if (obj.clientId != IpcChannel.ClientId || obj.messageId != MessageId || obj.hostId != IpcChannel.HostId)
+            if (obj.clientId != IpcChannel.ClientId || obj.messageId != MessageId || obj.walletId != IpcChannel.HostId)
             {
                 throw new Exception($"Failed to validate response." +
                     $"\n (incoming) c: {obj.clientId} w: {obj.walletId} m: {obj.messageId}" +
-                    $"\n (expected) c: {IpcChannel.ClientId} {IpcChannel.HostId} {MessageId}");
+                    $"\n (expected) c: {IpcChannel.ClientId} w: {IpcChannel.HostId} M: {MessageId}");
             }
             switch (responseType)
             {
@@ -76,6 +77,8 @@ namespace PylonsSdk.Internal.Ipc
                     return responseData.ToObject<TradeResponse>();
                 case ResponseType.EXECUTION_RESPONSE:
                     return responseData.ToObject<ExecutionResponse>();
+                case ResponseType.KEY_RESPONSE:
+                    return responseData.ToObject<KeyResponse>();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(responseType));
             }

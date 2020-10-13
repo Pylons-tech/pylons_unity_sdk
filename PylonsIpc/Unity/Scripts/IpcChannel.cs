@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Threading;
 
 namespace PylonsIpc
 {
     public abstract class IpcChannel
     {
-        public readonly static int ClientId = new System.Random().Next();
+        public readonly static int ClientId = new Random().Next();
         public static int HostId { get; protected set; }
 
-        public static bool Ready { get; private set; }
+        public static readonly Semaphore Semaphore = new Semaphore(1, 1);
 
         public abstract void Send(string message);
 

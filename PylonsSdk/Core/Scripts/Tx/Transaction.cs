@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PylonsSdk.Tx
 {
@@ -13,9 +16,9 @@ namespace PylonsSdk.Tx
 
     public readonly struct Transaction
     {
-        [JsonProperty("txData")]
+        [JsonProperty("txData", NullValueHandling = NullValueHandling.Ignore)]
         public readonly TxData[] TxData;
-        [JsonProperty("stdTx")]
+        [JsonProperty("stdTx", NullValueHandling = NullValueHandling.Ignore)]
         public readonly StdTx StdTx;
         [JsonProperty("code")]
         public readonly ResponseCode Code;

@@ -1,0 +1,17 @@
+{
+    "name": "PylonsSdk.ProfileTools.Editor",
+    "references": [
+        "GUID:42ba365f6b9ffc848b09b2996fc71b9c",
+        "GUID:6a77b524323470043b383789150119f8",
+        "GUID:6dda88f14a9957d49baad9aeb491825e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

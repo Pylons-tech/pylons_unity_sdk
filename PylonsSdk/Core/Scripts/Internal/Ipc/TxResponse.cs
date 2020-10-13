@@ -3,9 +3,9 @@ using PylonsSdk.Tx;
 
 namespace PylonsSdk.Internal.Ipc
 {
-    public readonly struct TxResponse
+    public readonly struct TxResponse 
     {
-        [JsonProperty("transactions")]
+        [JsonProperty("transactions", NullValueHandling = NullValueHandling.Include)]
         public readonly Transaction[] Transactions;
 
         public TxResponse(Transaction[] transactions)

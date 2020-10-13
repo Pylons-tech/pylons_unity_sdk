@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace PylonsIpc
 {
@@ -8,12 +10,8 @@ namespace PylonsIpc
     {
         public static void Stage (Func<IBroadcastable> action, params IpcEvent[] events)
         {
-            if (IpcChannel.Ready && !awaitingResponseToSubmittedMessage) action().Broadcast(events);
-            else
-            {
-                actionQueue.Enqueue(action);
-                argsQueue.Enqueue(events);
-            }
+            actionQueue.Enqueue(action);
+            argsQueue.Enqueue(events);
         }
 
         private static Queue<Func<IBroadcastable>> actionQueue = new Queue<Func<IBroadcastable>>();
@@ -31,10 +29,6 @@ namespace PylonsIpc
         protected dynamic outgoingMessage = null;
         public string receivedMessage { get; private set; } = null;
         protected PassedException receivedError = null;
-        protected virtual void PreSubmit() { }
-        protected virtual void Resolution() { }
-        protected virtual void Success() { }
-        protected virtual void Failure() { }
         protected IpcChannel encoder = IpcChannel.Create();
         public static bool awaitingResponseToSubmittedMessage = false;
 
@@ -44,24 +38,23 @@ namespace PylonsIpc
             outgoingMessage = msg;
         }
 
-
         private void Submit ()
         {
-            UnityEngine.Debug.Log("locked!");
             OnSubmit?.Invoke(this, new IpcInteractionEventArgs(this));
-            PreSubmit();
             var json = JsonConvert.SerializeObject(outgoingMessage);
-            UnityEngine.Debug.Log($"Firing: {json}");
             encoder.Send(json);
             awaitingResponseToSubmittedMessage = true;
             IpcManager.PrepareToReceiveMessage((sender, args) => {
-                UnityEngine.Debug.Log("Submit-time callback firing");
-                awaitingResponseToSubmittedMessage = false;
                 receivedMessage = args.message;
                 if (receivedMessage != null) UnityEngine.Debug.Log("Got response to originating message");
                 var evtArgs = new IpcInteractionEventArgs(this);
-                Resolution();
-                OnResolution?.Invoke(this, evtArgs);
+                UnityEngine.Debug.Log(json);
+                OnResolution += (s, e) =>
+                {
+                    awaitingResponseToSubmittedMessage = false;
+                    IpcChannel.Semaphore.Release();
+                };
+                OnResolution.Invoke(this, evtArgs);
             });
         }
 
@@ -79,7 +72,7 @@ namespace PylonsIpc
 
         public static void ProcessQueue()
         {
-            if (actionQueue.Count > 0)
+            if (actionQueue.Count > 0 && IpcChannel.Semaphore.WaitOne())
             {
                 UnityEngine.Debug.Log($"{actionQueue.Count} messages remaining in queue; dispatching next");
                 actionQueue.Dequeue()().Broadcast(argsQueue.Dequeue());
