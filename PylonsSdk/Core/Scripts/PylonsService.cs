@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using PylonsIpc;
 using System.Collections.Generic;
+using System.Threading;
 
 /// <summary>
 /// Provides a higher-level API for making calls into the wallet application, and takes care of
@@ -21,7 +22,7 @@ public class PylonsService : MonoBehaviour
 
     void Awake()
     {
-        if (instance == null) Initialize(); 
+        if (instance == null) Initialize();
     }
 
     void OnEnable()
@@ -42,7 +43,7 @@ public class PylonsService : MonoBehaviour
             else throw new Exception("can't initialize a new pylonsservice when one already exists");
         }
         instance = this;
-        if (Application.isPlaying) DontDestroyOnLoad(this);       
+        if (Application.isPlaying) DontDestroyOnLoad(this);
         onServiceLive?.Invoke(this, EventArgs.Empty);
     }
 
@@ -67,8 +68,8 @@ public class PylonsService : MonoBehaviour
     public void CreateCookbooks(string[] ids, string[] names, string[] developers, string[] descriptions, string[] versions, string[] supportEmails, long[] levels, long[] costsPerBlock, TxEvent evt) =>
         TxEventMessageHandler(() => new CreateCookbooks(ids, names, developers, descriptions, versions, supportEmails, levels, costsPerBlock), evt);
 
-    public void CreateRecipes(string[] names, string[] cookbooks, string[] decriptions, long[] blockIntervals, string[] coinInputs, string[] itemInputs, string[] outputTables, string[] outputs, TxEvent evt) =>
-        TxEventMessageHandler(() => new CreateRecipes(names, cookbooks, decriptions, blockIntervals, coinInputs, itemInputs, outputTables, outputs), evt);
+    public void CreateRecipes(string[] names, string[] cookbooks, string[] descriptions, long[] blockIntervals, string[] coinInputs, string[] itemInputs, string[] outputTables, string[] outputs, TxEvent evt) =>
+        TxEventMessageHandler(() => new CreateRecipes(names, cookbooks, descriptions, blockIntervals, coinInputs, itemInputs, outputTables, outputs), evt);
 
     public void CreateTrade(string[] coinInputs, string[] itemInputs, string[] coinOutputs, string[] itemOutputs, string extraInfo, TxEvent evt) =>
         TxEventMessageHandler(() => new CreateTrade(coinInputs, itemInputs, coinOutputs, itemOutputs, extraInfo), evt);

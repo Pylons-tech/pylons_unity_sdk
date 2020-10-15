@@ -3,6 +3,7 @@
     "com.pylons.ipc": "file:D:/contracting/pylons_unity_sdk/PylonsIpc/Unity",
     "com.pylons.unity.sdk.core": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/Core",
     "com.pylons.unity.sdk.devwallet": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/DevWallet",
+    "com.pylons.unity.sdk.examples": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/Examples",
     "com.pylons.unity.sdk.itemschema": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/ItemSchema",
     "com.pylons.unity.sdk.profiletools": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/ProfileTools",
     "com.unity.burst": "1.3.6",
