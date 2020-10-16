@@ -12,5 +12,10 @@
   "dependencies": {
     "com.pylons.unity.sdk.core": "0.1.0",
     "jillejr.newtonsoft.json-for-unity": "12.0.301"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/Pylons-tech/pylons_unity_sdk.git",
+    "directory": "PylonsSdk/ProfileTools"
   }
 }

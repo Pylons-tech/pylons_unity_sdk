@@ -15,5 +15,10 @@
     "com.pylons.unity.sdk.itemschema": "0.1.0",
     "com.pylons.unity.sdk.profiletools": "0.1.0",
     "jillejr.newtonsoft.json-for-unity": "12.0.301"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/Pylons-tech/pylons_unity_sdk.git",
+    "directory": "PylonsSdk/Examples"
   }
 }

@@ -9,6 +9,10 @@
     "name": "Pylons LLC",
     "url": "https://example.com"
   },
-  "dependencies": {
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/Pylons-tech/pylons_unity_sdk.git",
+    "directory": "PylonsSdk/DevWallet"
   }
 }

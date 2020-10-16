@@ -1,7 +1,7 @@
 {
-  "name": "com.pylons.ipc",
+  "name": "com.pylons.ipc.unity",
   "version": "0.1.0",
-  "displayName": "Pylons IPC",
+  "displayName": "Pylons IPC for Unity",
   "description": "Simple cross-platform IPC abstraction library for Unity",
   "unity": "2020.1",
   "author": {
@@ -11,5 +11,10 @@
   },
   "dependencies": {
     "jillejr.newtonsoft.json-for-unity": "12.0.301"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/Pylons-tech/pylons_unity_sdk.git",
+    "directory": "PylonsIpc/Unity"
   }
 }
