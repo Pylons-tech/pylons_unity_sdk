@@ -16,7 +16,7 @@ namespace PylonsSdk.Internal
             string output;
             if (privKey != null) output = $"{GetAddress()} {privKey}";
             else output = GetAddress();
-            if (hosted) return string.Join("", @"/k """"", GetRealPathToDevProcess("Packages/com.pylons.unity.sdk.devwallet/pylons_dwallet.exe "), output);
+            if (hosted) return string.Join("", @"/k """"", GetRealPathToDevProcess("Packages/com.pylons.unity.sdk.core/pylons_dwallet.exe "), output);
             else return output;
         }
 
@@ -26,7 +26,7 @@ namespace PylonsSdk.Internal
                 ".WalletService",
                 50001,
                 "pylons_dwallet",
-                GetRealPathToDevProcess("Packages/com.pylons.sdk.devwallet/pylons_dwallet.exe"),
+                GetRealPathToDevProcess("Packages/com.pylons.sdk.core/pylons_dwallet.exe"),
                 "cmd.exe")
         {
             Debug.Log("Set up PylonsIpcTarget");
