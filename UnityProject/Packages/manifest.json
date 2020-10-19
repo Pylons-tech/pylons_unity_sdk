@@ -1,8 +1,7 @@
 {
   "dependencies": {
-    "com.pylons.ipc": "file:D:/contracting/pylons_unity_sdk/PylonsIpc/Unity",
+    "com.pylons.unity.ipc": "file:D:/contracting/pylons_unity_sdk/PylonsIpc/Unity",
     "com.pylons.unity.sdk.core": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/Core",
-    "com.pylons.unity.sdk.devwallet": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/DevWallet",
     "com.pylons.unity.sdk.examples": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/Examples",
     "com.pylons.unity.sdk.itemschema": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/ItemSchema",
     "com.pylons.unity.sdk.profiletools": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/ProfileTools",
@@ -58,16 +57,16 @@
   "scopedRegistries": [
     {
       "name": "Packages from jillejr",
-      "url": "https://npm.cloudsmith.io/jillejr/newtonsoft-json-for-unity/",
+      "url": "https://npm.cloudsmith.io/jillejr/newtonsoft-json-for-unity",
       "scopes": [
         "jillejr"
       ]
     },
     {
-      "name": "npm",
-      "url": "https://registry.npmjs.org/",
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
       "scopes": [
-        "f"
+        "com.pylons"
       ]
     }
   ],
