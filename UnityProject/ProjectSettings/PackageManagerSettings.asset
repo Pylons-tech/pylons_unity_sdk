@@ -31,28 +31,28 @@ MonoBehaviour:
     - jillejr
     m_IsDefault: 0
     m_Capabilities: 0
-  - m_Id: scoped:npm
-    m_Name: npm
-    m_Url: https://registry.npmjs.org
+  - m_Id: scoped:OpenUPM
+    m_Name: OpenUPM
+    m_Url: https://package.openupm.com
     m_Scopes:
-    - f
+    - com.pylons
     m_IsDefault: 0
     m_Capabilities: 0
-  m_UserSelectedRegistryName: npm
+  m_UserSelectedRegistryName: OpenUPM
   m_UserAddingNewScopedRegistry: 0
   m_RegistryInfoDraft:
     m_ErrorMessage: 
     m_Original:
-      m_Id: scoped:npm
-      m_Name: npm
-      m_Url: https://registry.npmjs.org
+      m_Id: scoped:OpenUPM
+      m_Name: OpenUPM
+      m_Url: https://package.openupm.com
       m_Scopes:
-      - f
+      - com.pylons
       m_IsDefault: 0
       m_Capabilities: 0
     m_Modified: 0
-    m_Name: npm
-    m_Url: https://registry.npmjs.org
+    m_Name: OpenUPM
+    m_Url: https://package.openupm.com
     m_Scopes:
-    - f
+    - com.pylons
     m_SelectedScopeIndex: 0

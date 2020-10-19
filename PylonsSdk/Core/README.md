@@ -1,4 +1,4 @@
-﻿# Pylons SDK for Unity (Core) [![openupm](https://img.shields.io/npm/v/com.pylons.sdk.core?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.pylons.sdk.core/)
+﻿# Pylons SDK for Unity (Core) [![openupm](https://img.shields.io/npm/v/com.pylons.unity.sdk.core?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.pylons.unity.sdk.core/)
 > Tools for building games that use the Pylons blockchain in Unity
 
 [![NPM Version][npm-image]][npm-url]
@@ -11,38 +11,32 @@ Unity, retrieving and managing data from the blockchain, and creating and submit
 This module provides the core functionality of the SDK. Additional high-level helpers and editor functionality for interacting with
 profiles and native Pylons items are available below:
 
-- [ProfileTools](https://openupm.com/packages/com.pylons.sdk.profiletools/)
-- [ItemSchema](https://openupm.com/packages/com.pylons.sdk.itemschema/)
+- [ProfileTools](https://openupm.com/packages/com.pylons.unity.sdk.profiletools/)
+- [ItemSchema](https://openupm.com/packages/com.pylons.unity.sdk.itemschema/)
 
-
-![](header.png)
+![](/.github/images/header.png)
 
 ## Installation
 
 openupm-cli:
 
-```
+If [openupm-cli](https://github.com/openupm/openupm-cli) is already installed:
 
+```
+openupm add com.pylons.unity.sdk.core
 ```
 
 Manually adding the scope within the Unity Package Manager:
 
-```
+- Edit > Project Settings > Package Manager
+- Under the Scoped Registries heading, click the + button to add a new entry to the list.
+- Configure the new registry as below, then hit apply:
 
-```
+![Registry config](/.github/images/registry.png)
 
 ## Usage example
 
 Example code is available in the [Pylons SDK examples package](https://openupm.com/packages/com.pylons.sdk.examples/).
-
-## Development setup
-
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
-```sh
-make install
-npm test
-```
 
 ## Release History
 
@@ -51,8 +45,8 @@ npm test
 
 ## Meta
 
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
+[Pylons LLC](https://pylons.tech) – contact@pylons.tech
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
+Distributed under the MIT license. See ``LICENSE`` for more information.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+[Pylons on Github](https://github.com/Pylons-tech/)
