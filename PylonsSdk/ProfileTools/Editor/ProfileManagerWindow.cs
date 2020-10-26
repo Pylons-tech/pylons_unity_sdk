@@ -21,6 +21,9 @@ namespace PylonsSdk.ProfileTools.Editor
         private Profile currentProfile;
         private ProfileDef[] profileDefs = new ProfileDef[0];
         private bool showPrivateKey;
+        // HACK: Profile names don't exist on the backend yet, but we need a name to assign to profiles for our UI to make sense.
+        private string localName;
+        private string localNote;
         private ProfileExistState profileExists;
         private Texture2D red;
         private Texture2D yellow;
@@ -54,26 +57,38 @@ namespace PylonsSdk.ProfileTools.Editor
         void OnEnable()
         {
             SetupResources();
-            UpdateDataModel();
+            if (!LoadProfiles()) RegisterNewProfile();
+            else SetProfile(profileDefs[0]);
+            AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
         }
 
-        private void LoadProfiles()
+        // hide before reloading assemblies, since we're gonna lose the devwallet instance
+        void OnBeforeAssemblyReload()
+        {
+            ready = false;
+        }
+
+        private bool LoadProfiles()
         {
             profileDefs = ProfileDef.GetAll();
-            // Sort the loaded profiledefs so the current profile is at index 0;
-            var index = GetIndexOfCurrent();
-            Debug.Log($"Index is {index}");
-            if (index != -1)
+            if (profileDefs.Length > 0)
             {
-                var p = new ProfileDef[profileDefs.Length];
-                p[0] = profileDefs[index];
-                for (int i = 0; i < profileDefs.Length; i++)
+                // Sort the loaded profiledefs so the current profile is at index 0;
+                var index = GetIndexOfCurrent();
+                Debug.Log($"Index is {index}");
+                if (index != -1)
                 {
-                    if (i < index) p[i + 1] = profileDefs[i];
-                    else if (i > index) p[i + 1] = profileDefs[i - 1];
+                    var p = new ProfileDef[profileDefs.Length];
+                    p[0] = profileDefs[index];
+                    for (int i = 0; i < profileDefs.Length; i++)
+                    {
+                        if (i < index) p[i + 1] = profileDefs[i];
+                        else if (i > index) p[i + 1] = profileDefs[i - 1];
+                    }
+                    profileDefs = p;
                 }
-                profileDefs = p;
             }
+            return profileDefs.Length > 0;
         }
 
         private void UpdateDataModel ()
@@ -95,16 +110,19 @@ namespace PylonsSdk.ProfileTools.Editor
             }
             else
             {
-                GUILayout.Label("Loading...\nPlease wait.");
+                GUILayout.Label("Loading...\nPlease wait."); // todo: this should be less bad
             }
         }
+
+        private void SetProfile(ProfileDef profileDef) => SetProfile(profileDef, null); 
 
         private void SetProfile(ProfileDef profileDef, Profile profile)
         {
             Debug.Log("Set profile");
             currentDef = profileDef;
             currentProfile = profile;
-            nameInput = currentDef.Name;
+            localName = currentDef.Name;
+            localNote = currentDef.Note;
             CheckProfileExists(currentDef);
         }
 
@@ -126,6 +144,7 @@ namespace PylonsSdk.ProfileTools.Editor
                     profileDef.Save();
                 }
                 else profileExists = ProfileExistState.DOES_NOT_EXIST;
+                ready = true;
             }));
         }
 
@@ -147,6 +166,15 @@ namespace PylonsSdk.ProfileTools.Editor
                     break;
             }
         }
+        
+        private void RegisterNewProfile()
+        {
+            PylonsIpcTarget.SetPrivKey("");
+            IpcChannelDebugHttp.IOEngine.Instance.RestartTargetExe();
+            PylonsService.instance.RegisterProfile("", (s, e) => UpdateDataModel());
+            ready = false;
+            LoadProfiles();
+        }
 
         private void Toolbar()
         {
@@ -159,12 +187,10 @@ namespace PylonsSdk.ProfileTools.Editor
                     for (int i = 0; i < ps.Length; i++) ps[i] = new GUIContent(profileDefs[i].Name);
                 }
                 else ps = new GUIContent[] { new GUIContent("Profile") };
-                GUILayout.Toolbar(0, ps);
-                if (GUILayout.Button("+", GUILayout.Width(16)))
-                {
-                    PylonsIpcTarget.SetPrivKey("4aa2a734252a0261db13467863040d7441a8572e1ca47bc336e8af3ade490f8c");
-                    IpcChannelDebugHttp.IOEngine.Instance.RestartTargetExe();
-                }
+                var cur = GetIndexOfCurrent();
+                var index = GUILayout.Toolbar(cur, ps);
+                if (index != cur) SetProfile(profileDefs[index]); 
+                if (GUILayout.Button("+", GUILayout.Width(16))) RegisterNewProfile();
             };
         }
 
@@ -181,16 +207,14 @@ namespace PylonsSdk.ProfileTools.Editor
             // how to deal w/ the checkexists event...
             using (var h = new EditorGUILayout.HorizontalScope())
             {
-                GUILayout.Space(26);
                 EditorGUILayout.LabelField($"Public key: ", EditorStyles.miniLabel, GUILayout.Width(Normalize(96)));
                 EditorGUILayout.SelectableLabel(profileDef.PublicKey, EditorStyles.miniTextField);
             };
 
             using (var h = new EditorGUILayout.HorizontalScope())
             {
-                showPrivateKey = EditorGUILayout.Toggle(showPrivateKey, GUILayout.Width(26));
-                var diff = 26 - Normalize(26);
-                EditorGUILayout.LabelField($"Private key: ", EditorStyles.miniLabel, GUILayout.Width(Normalize(70) + diff));
+                showPrivateKey = EditorGUILayout.Toggle(showPrivateKey, GUILayout.Width(Normalize(26)));
+                EditorGUILayout.LabelField($"Private key: ", EditorStyles.miniLabel, GUILayout.Width(Normalize(70)));
                 if (showPrivateKey) EditorGUILayout.SelectableLabel(profileDef.PrivateKey, EditorStyles.miniTextField);
                 else EditorGUILayout.SelectableLabel("(hidden)", EditorStyles.miniTextField);
             };
@@ -202,9 +226,29 @@ namespace PylonsSdk.ProfileTools.Editor
             using (var h = new EditorGUILayout.HorizontalScope())
             {
                 EditorGUILayout.LabelField("Name: ", EditorStyles.miniBoldLabel, GUILayout.Width(Normalize(96)));
-                if (profileExists == ProfileExistState.DOES_NOT_EXIST) nameInput = EditorGUILayout.TextField(nameInput, EditorStyles.miniTextField);
-                else EditorGUILayout.SelectableLabel(profileDef.Name, EditorStyles.miniTextField);
+                //if (profileExists == ProfileExistState.DOES_NOT_EXIST) nameInput = EditorGUILayout.TextField(nameInput, EditorStyles.miniTextField);
+                //else EditorGUILayout.SelectableLabel(profileDef.Name, EditorStyles.miniTextField);
+                localName = EditorGUILayout.TextField(localName);
             };
+
+            using (var h = new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.LabelField("Notes: ", EditorStyles.miniBoldLabel, GUILayout.Width(Normalize(96)));
+                localNote = EditorGUILayout.TextArea(localNote);
+            }
+
+            if (localName != profileDef.Name || localNote != profileDef.Note)
+            {
+                if (GUILayout.Button("Save", GUILayout.Width(Normalize(24))))
+                {
+                    var index = GetIndexOfCurrent();
+                    var newDef = new ProfileDef(currentDef.PrivateKey, currentDef.PublicKey, localName, currentDef.Address, localNote);
+                    currentDef.Delete();
+                    newDef.Save();
+                    profileDefs[index] = newDef;
+                    SetProfile(newDef, currentProfile);
+                }
+            }
 
             if (profileExists == ProfileExistState.DOES_NOT_EXIST)
             {
@@ -219,10 +263,12 @@ namespace PylonsSdk.ProfileTools.Editor
 
             if (currentProfile != null)
             {
+                EditorGUILayout.LabelField($"Pylons: {currentProfile.GetCoin("pylon")}", EditorStyles.miniBoldLabel);
+
                 using (var v = new EditorGUILayout.VerticalScope())
                 {
-                    EditorGUILayout.LabelField("Coins", EditorStyles.miniBoldLabel);
-                    foreach (var coin in currentProfile.Coins) EditorGUILayout.LabelField($"{coin.Denom}: {coin.Amount}", EditorStyles.miniLabel);
+                    EditorGUILayout.LabelField("Other coins", EditorStyles.miniBoldLabel);
+                    foreach (var coin in currentProfile.Coins) if (coin.Denom != "pylon") EditorGUILayout.LabelField($"{coin.Denom}: {coin.Amount}", EditorStyles.miniLabel);
                 }
                 //TODO: also display items
             }

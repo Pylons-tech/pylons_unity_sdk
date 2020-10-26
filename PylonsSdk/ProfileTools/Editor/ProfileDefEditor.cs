@@ -3,7 +3,7 @@
 namespace PylonsSdk.ProfileTools.Editor
 {
     [CustomEditor(typeof(ProfileDef))]
-    public class ProfileToolsEditor : UnityEditor.Editor
+    public class ProfileDefEditor : UnityEditor.Editor
     {
         SerializedProperty privateKey;
         SerializedProperty publicKey;

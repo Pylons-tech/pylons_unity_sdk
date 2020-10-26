@@ -1,15 +1,14 @@
 ﻿# Pylons SDK for Unity (Core) [![openupm](https://img.shields.io/npm/v/com.pylons.unity.sdk.core?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.pylons.unity.sdk.core/)
 > Tools for building games that use the Pylons blockchain in Unity
 
-[![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
-
 The Pylons SDK for Unity supplies developers with extensible, easy-to-use tools for communicating with a Pylons wallet from within
 Unity, retrieving and managing data from the blockchain, and creating and submitting transactions.
 
 This module provides the core functionality of the SDK. Additional high-level helpers and editor functionality for interacting with
 profiles and native Pylons items are available below:
+
+**This is a preview release.** Efforts have been made to find and fix bugs and polish the available features, but new and exciting bugs
+will definitely emerge when this package starts to see external use. Usability issues, too, are to be expected.
 
 - [ProfileTools](https://openupm.com/packages/com.pylons.unity.sdk.profiletools/)
 - [ItemSchema](https://openupm.com/packages/com.pylons.unity.sdk.itemschema/)
@@ -33,6 +32,8 @@ Manually adding the scope within the Unity Package Manager:
 - Configure the new registry as below, then hit apply:
 
 ![Registry config](/.github/images/registry.png)
+
+- In the top left of the Package Manager window, click the 'Packages: Unity Registry' dropdown and select 'Packages: My Registries' instead. Then, select the package from the list on the left and click 'Install.'
 
 ## Usage example
 

@@ -75,9 +75,15 @@ namespace PylonsSdk.ProfileTools.Editor
             return ls.ToArray();
         }
 
+        public void Delete()
+        {
+            var fn = Path.Combine(Application.persistentDataPath, "profiles", $"{Name}{Address}");
+            if (File.Exists(fn)) File.Delete(fn);
+        }
+
         public void Save()
         {
-            if (!Valid) throw new Exception("Shouldn't be trying to save a ProfileDef that doesn't represent a valid set of keys!") ;
+            if (!Valid) throw new Exception("Shouldn't be trying to save a ProfileDef that doesn't represent a valid set of keys!");
             //else if (string.IsNullOrEmpty(Name)) throw new Exception("Shouldn't be trying to save a profile with no name.");
             var fn = Path.Combine(Application.persistentDataPath, "profiles", $"{Name}{Address}");
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "profiles"));
