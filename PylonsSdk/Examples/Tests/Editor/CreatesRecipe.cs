@@ -32,8 +32,19 @@ namespace PylonsSdk.Examples
                 blockIntervals: new long[] { 0 },
                 coinInputs: new string[] { JsonConvert.SerializeObject(new CoinInput[] { new CoinInput("pylon", 1) }) },
                 itemInputs: new string[] { JsonConvert.SerializeObject(new ItemInput[0]) },
-                outputTables: new string[] { JsonConvert.SerializeObject(new EntriesList[0]) },
-                outputs: new string[] { JsonConvert.SerializeObject(new WeightedOutput[0]) },
+                outputTables: new string[] { JsonConvert.SerializeObject(new EntriesList[] {
+                    new EntriesList(
+                        coinOutputs: new CoinOutput[] { new CoinOutput("out_token", "token", "999") },
+                        itemModifyOutputs: new ItemModifyOutput[] { },
+                        itemOutputs: new ItemOutput[] { new ItemOutput(
+                            doubles: new DoubleOutputParam[] { },
+                            longs: new LongOutputParam[] { },
+                            strings: new StringOutputParam[] { new StringOutputParam("", 1.0, "name", "Rodney") },
+                            itemUpgradeParams: new ItemUpgradeParams { }
+                            ) }
+                        )
+                }) },
+                outputs: new string[] { JsonConvert.SerializeObject(new WeightedOutput[] { new WeightedOutput(new string[] { }, "1.0") }) },
                 evt: (s, t) =>
                 {
                     if (t.Length > 0 && t[0].Code == Tx.ResponseCode.OK) Succeeded = true;

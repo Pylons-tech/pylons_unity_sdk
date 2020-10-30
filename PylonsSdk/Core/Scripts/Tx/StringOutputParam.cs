@@ -6,10 +6,10 @@ namespace PylonsSdk.Tx
     {
         public readonly string Program;
         public readonly double Rate;
-        public readonly double Key;
+        public readonly string Key;
         public readonly string Value;
 
-        public StringOutputParam(string program, double rate, double key, string value)
+        public StringOutputParam(string program, double rate, string key, string value)
         {
             Program = program ?? throw new ArgumentNullException(nameof(program));
             Rate = rate;

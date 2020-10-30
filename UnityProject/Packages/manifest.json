@@ -73,6 +73,7 @@
   "testables": [
     "jillejr.newtonsoft.json-for-unity",
     "com.pylons.unity.sdk.core",
-    "com.pylons.unity.sdk.itemschema"
+    "com.pylons.unity.sdk.itemschema",
+	"com.pylons.unity.sdk.examples"
   ]
 }

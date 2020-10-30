@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using PylonsSdk.ProfileTools;
+using UnityEngine.TestTools;
+using System.Collections;
+using NUnit.Framework;
 
 namespace PylonsSdk.Examples
 {
@@ -8,16 +11,17 @@ namespace PylonsSdk.Examples
     /// (If the available get-pylons endpoint doesn't support that kind of granularity,
     /// we should automatically get whatever the smallest available amount greater than 99 is.)
     /// </summary>
-    public class GetsPylons : MonoBehaviour
+    public static partial class ExampleIntegrationTests
     {
-        public bool Finished;
-        public long StartingPylons;
-        public long CurrentPylons;
-
-        void Start ()
+        [UnityTest]
+        public static IEnumerator GetsPylons ()
         {
+            LogAssert.Expect(LogType.Assert, "success");
+            var startingPylons = 0l;
+            var currentPylons = 0l;
+            var done = false;
             Profile.GetSelf<Profile>((s, p) => {
-                StartingPylons = p.Profile.GetCoin("pylon");
+                startingPylons = p.Profile.GetCoin("pylon");
             });
             PylonsService.instance.GetPylons(99, (s, p) =>
             {
@@ -28,9 +32,11 @@ namespace PylonsSdk.Examples
                 // Unsure of where the best place to do that check is ATM, though. IPC manager, maybe?
             });
             Profile.GetSelf<Profile>((s, p) => {
-                CurrentPylons = p.Profile.GetCoin("pylon");
-                Finished = true;
+                currentPylons = p.Profile.GetCoin("pylon");
+                done = true;
             });
+            while (!done) yield return null;
+            Debug.Assert(currentPylons > startingPylons, "success");
         }
     }
 }
