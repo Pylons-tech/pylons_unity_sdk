@@ -57,7 +57,7 @@ public class PylonsService : MonoBehaviour
     private void TxEventMessageHandler(Func<IpcMessage> msg, TxEvent evt) => IpcInteraction.Stage(msg, (s, e) => { evt.Invoke(s, ((TxResponse)e).Transactions); });
 
     public void ApplyRecipe(string recipe, string cookbook, string[] itemInputs, TxEvent evt) =>
-        TxEventMessageHandler(() => new ApplyRecipe(recipe, cookbook, itemInputs), evt);
+        TxEventMessageHandler(() => new ExecuteRecipe(recipe, cookbook, itemInputs), evt);
 
     public void CancelTrade(string tradeId, TxEvent evt) =>
         TxEventMessageHandler(() => new CancelTrade(tradeId), evt);
