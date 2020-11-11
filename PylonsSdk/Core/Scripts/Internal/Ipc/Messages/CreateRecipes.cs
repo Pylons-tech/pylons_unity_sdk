@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace PylonsSdk.Internal.Ipc.Messages
 {
@@ -72,14 +71,14 @@ namespace PylonsSdk.Internal.Ipc.Messages
         public CreateRecipes(string[] names, string[] cookbooks, string[] decriptions, long[] blockIntervals, 
             string[] coinInputs, string[] itemInputs, string[] outputTables, string[] outputs) : base(ResponseType.TX_RESPONSE)
         {
-            Names = names ?? throw new ArgumentNullException(nameof(names));
-            Cookbooks = cookbooks ?? throw new ArgumentNullException(nameof(cookbooks));
-            Decriptions = decriptions ?? throw new ArgumentNullException(nameof(decriptions));
-            BlockIntervals = blockIntervals ?? throw new ArgumentNullException(nameof(blockIntervals));
-            CoinInputs = coinInputs ?? throw new ArgumentNullException(nameof(coinInputs));
-            ItemInputs = itemInputs ?? throw new ArgumentNullException(nameof(itemInputs));
-            OutputTables = outputTables ?? throw new ArgumentNullException(nameof(outputTables));
-            Outputs = outputs ?? throw new ArgumentNullException(nameof(outputs));
+            Names = names;
+            Cookbooks = cookbooks;
+            Decriptions = decriptions;
+            BlockIntervals = blockIntervals;
+            CoinInputs = coinInputs;
+            ItemInputs = itemInputs;
+            OutputTables = outputTables;
+            Outputs = outputs;
         }
     }
 }

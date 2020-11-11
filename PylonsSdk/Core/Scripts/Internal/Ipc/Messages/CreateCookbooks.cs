@@ -17,7 +17,7 @@ namespace PylonsSdk.Internal.Ipc.Messages
     /// a single cookbook, just use arrays of length 1. Contractually speaking, creating *zero* cookbooks should work, though
     /// obviously that should never actually be done.)
     /// 
-    /// Gets a TxResponse containing all of the created CreateRecipe transactions.
+    /// Gets a TxResponse containing all of the created CreateCookbook transactions.
     /// </summary>
     public sealed class CreateCookbooks : IpcMessage
     {

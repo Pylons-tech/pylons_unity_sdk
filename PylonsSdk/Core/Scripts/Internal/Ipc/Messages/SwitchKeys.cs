@@ -9,6 +9,9 @@ namespace PylonsSdk.Internal.Ipc.Messages
     /// </summary>
     public sealed class SwitchKeys : IpcMessage
     {
+        /// <summary>
+        /// The address of the (loaded!) keypair to switch to.
+        /// </summary>
         [JsonProperty("address")]
         public readonly string Address;
 
