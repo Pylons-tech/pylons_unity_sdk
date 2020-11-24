@@ -7,15 +7,15 @@ namespace PylonsSdk.Internal
     {
         public const string WALLET_DATA_PATH = "_wallet";
 
-        private static string privKey = null;
-
-        public static void SetPrivKey(string key) => privKey = key;
+#if UNITY_EDITOR
+        public const bool USE_MULTIKEY = true;
+#else
+        public const bool USE_MULTIKEY = false;
+#endif
 
         public override string GenerateDevProcessArguments(bool hosted)
         {
-            string output;
-            if (privKey != null) output = $"{GetAddress()} {privKey}";
-            else output = GetAddress();
+            string output = GetAddress();
             if (hosted) return string.Join("", @"/k """"", GetRealPathToDevProcess("Packages/com.pylons.unity.sdk.core/pylons_dwallet.exe "), output);
             else return output;
         }

@@ -169,8 +169,6 @@ namespace PylonsSdk.ProfileTools.Editor
         
         private void RegisterNewProfile()
         {
-            PylonsIpcTarget.SetPrivKey("");
-            IpcChannelDebugHttp.IOEngine.Instance.RestartTargetExe();
             PylonsService.instance.RegisterProfile("", (s, e) => UpdateDataModel());
             ready = false;
             LoadProfiles();

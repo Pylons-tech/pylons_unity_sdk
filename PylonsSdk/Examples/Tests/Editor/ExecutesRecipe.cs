@@ -19,7 +19,7 @@ namespace PylonsSdk.Examples
             Profile.GetSelf<Profile>((s, p) => {
                 StartingWidgets = p.Profile.GetCoin("widget");
             });
-            PylonsService.instance.ApplyRecipe("testRecipe", "testCookbook", new string[0], (s, t) =>
+            PylonsService.instance.ExecuteRecipe("testRecipe", "testCookbook", new string[0], (s, t) =>
             {
                 if (t.Length > 0 && t[0].Code == Tx.ResponseCode.OK) Succeeded = true;
             });

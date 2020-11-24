@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace PylonsSdk.ProfileTools.Editor
+namespace PylonsSdk.ProfileTools
 {
     public delegate void ProfileDefEvent(object caller, ProfileDef profileDef, Profile profile);
 
