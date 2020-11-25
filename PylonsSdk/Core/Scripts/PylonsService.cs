@@ -68,7 +68,6 @@ namespace PylonsSdk
                 {
                     foreach (var function in type.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public))
                     {
-                        foreach (var a in Attribute.GetCustomAttributes(function)) Debug.Log(a.GetType().FullName);
                         if (Attribute.GetCustomAttribute(function, typeof(RunOnServiceLive)) != null)
                         {
                             Debug.Log($"found: {type.FullName}.{function.Name}");

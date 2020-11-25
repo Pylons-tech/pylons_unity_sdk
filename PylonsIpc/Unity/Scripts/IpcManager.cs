@@ -92,6 +92,7 @@ namespace PylonsIpc
             {
                 anticipatingMessage = false;
                 if (onOutgoingMessageGet != null) UnityEngine.Debug.Log(new StackTrace());
+                Debug.Log(receivedMsg.GetType());
                 onOutgoingMessageGet?.Invoke(this, new IncomingMessageEventArgs(receivedMsg));
                 onOutgoingMessageGet = null;
             }

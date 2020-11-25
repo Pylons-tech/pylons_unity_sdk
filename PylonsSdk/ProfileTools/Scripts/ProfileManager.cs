@@ -1,6 +1,7 @@
 ﻿
 using UnityEngine;
 using PylonsSdk.Internal.Ipc.Messages;
+using PylonsIpc;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,7 +19,7 @@ namespace PylonsSdk.ProfileTools
             var defaultPrivkey = GetDefaultStoredKey();
             if (!string.IsNullOrEmpty(defaultPrivkey))
             {
-                PylonsService.instance.TxEventMessageHandler(() => new AddKeypair(defaultPrivkey), (s, p) => { Initialized = true; });
+                IpcInteraction.Stage(() => new AddKeypair(defaultPrivkey), (s, p) => { Initialized = true; });
             }
             else
             {
