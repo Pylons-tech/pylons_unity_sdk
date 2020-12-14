@@ -5,9 +5,9 @@
   "description": "Simple cross-platform IPC abstraction library for Unity",
   "unity": "2020.1",
   "author": {
-    "email": "not.a@valid.email",
+    "email": "m@pylons.tech",
     "name": "Pylons LLC",
-    "url": "https://example.com"
+    "url": "http://www.pylons.tech"
   },
   "dependencies": {
     "jillejr.newtonsoft.json-for-unity": "12.0.301"

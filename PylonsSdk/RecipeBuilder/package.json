@@ -1,8 +1,8 @@
 {
-  "name": "com.pylons.unity.sdk.itemschema",
+  "name": "com.pylons.unity.sdk.recipebuilder",
   "version": "0.1.0",
-  "displayName": "Pylons SDK for Unity (ItemSchema)",
-  "description": "Tools for parsing native blockchain objects into C# types and interacting with those within game logic",
+  "displayName": "Pylons SDK for Unity (RecipeBuilder)",
+  "description": "Tools for creating and updating recipes on the Pylons blockchain",
   "unity": "2020.1",
   "author": {
     "email": "m@pylons.tech",
@@ -16,6 +16,6 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/Pylons-tech/pylons_unity_sdk.git",
-    "directory": "PylonsSdk/ItemSchema"
+    "directory": "PylonsSdk/RecipeBuilder"
   }
 }

@@ -5,9 +5,9 @@
   "description": "Example code using the features of the Pylons SDK for Unity",
   "unity": "2020.1",
   "author": {
-    "email": "not.a@valid.email",
+    "email": "m@pylons.tech",
     "name": "Pylons LLC",
-    "url": "https://example.com"
+    "url": "http://www.pylons.tech"
   },
   "dependencies": {
     "com.pylons.unity.sdk.core": "0.1.0",

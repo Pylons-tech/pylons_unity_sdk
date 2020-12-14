@@ -5,9 +5,9 @@
   "description": "Blockchain and IPC tools for creating games that run on the Pylons chain in Unity",
   "unity": "2020.1",
   "author": {
-    "email": "not.a@valid.email",
+    "email": "m@pylons.tech",
     "name": "Pylons LLC",
-    "url": "https://example.com"
+    "url": "http://www.pylons.tech"
   },
   "dependencies": {
     "com.pylons.unity.ipc": "0.1.0",

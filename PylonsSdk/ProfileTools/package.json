@@ -5,9 +5,9 @@
   "description": "Tools for managing and interacting with the state of on-chain user profiles from within game logic",
   "unity": "2020.1",
   "author": {
-    "email": "not.a@valid.email",
+    "email": "m@pylons.tech",
     "name": "Pylons LLC",
-    "url": "https://example.com"
+    "url": "http://www.pylons.tech"
   },
   "dependencies": {
     "com.pylons.unity.sdk.core": "0.1.0",
