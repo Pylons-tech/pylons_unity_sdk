@@ -1,9 +1,8 @@
 {
-    "name": "PylonsSdk.RecipeBuilder.Editor",
+    "name": "PylonsSdk.RecipeBuilder.Runtime",
     "references": [
         "GUID:42ba365f6b9ffc848b09b2996fc71b9c",
-        "GUID:6dda88f14a9957d49baad9aeb491825e",
-        "GUID:d593863a36f0f8c418f556bcedff4423"
+        "GUID:6dda88f14a9957d49baad9aeb491825e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
