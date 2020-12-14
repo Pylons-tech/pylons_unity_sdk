@@ -46,6 +46,15 @@
         "jillejr.newtonsoft.json-for-unity": "12.0.301"
       }
     },
+    "com.pylons.unity.sdk.recipebuilder": {
+      "version": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/RecipeBuilder",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.pylons.unity.sdk.core": "0.1.0",
+        "jillejr.newtonsoft.json-for-unity": "12.0.301"
+      }
+    },
     "com.unity.burst": {
       "version": "1.3.6",
       "depth": 0,

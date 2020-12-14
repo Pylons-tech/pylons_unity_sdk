@@ -5,6 +5,7 @@
     "com.pylons.unity.sdk.examples": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/Examples",
     "com.pylons.unity.sdk.itemschema": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/ItemSchema",
     "com.pylons.unity.sdk.profiletools": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/ProfileTools",
+    "com.pylons.unity.sdk.recipebuilder": "file:D:/contracting/pylons_unity_sdk/PylonsSdk/RecipeBuilder",
     "com.unity.burst": "1.3.6",
     "com.unity.collab-proxy": "1.3.9",
     "com.unity.editorcoroutines": "1.0.0",
@@ -74,6 +75,6 @@
     "jillejr.newtonsoft.json-for-unity",
     "com.pylons.unity.sdk.core",
     "com.pylons.unity.sdk.itemschema",
-	"com.pylons.unity.sdk.examples"
+    "com.pylons.unity.sdk.examples"
   ]
 }
