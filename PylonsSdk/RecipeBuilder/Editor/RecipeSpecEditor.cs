@@ -61,8 +61,14 @@ namespace PylonsSdk.RecipeBuilder.Editor
                     }
                     for (int i = 0; i < coinInputs.arraySize; i++)
                     {
-                        if (EditorGUILayout.PropertyField(coinInputs.GetArrayElementAtIndex(i), GUIContent.none, true) && coinInputs.GetArrayElementAtIndex(i) == null)
-                            coinInputs.DeleteArrayElementAtIndex(i);
+                        var childProperty = coinInputs.GetArrayElementAtIndex(i);
+                        if (childProperty.objectReferenceInstanceIDValue != 0)
+                        {
+                            var so = new SerializedObject(childProperty.objectReferenceValue);
+                            EditorGUILayout.PropertyField(so.FindProperty("Coin"));
+                            EditorGUILayout.PropertyField(so.FindProperty("Quantity"));
+                            so.ApplyModifiedProperties();
+                        }
                     }
                 }
                 EditorGUILayout.PropertyField(itemInputs);
