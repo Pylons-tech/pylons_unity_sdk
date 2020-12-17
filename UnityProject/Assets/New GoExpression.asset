@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 065d081b680f3e54ebc568f76a772cfe, type: 3}
-  m_Name: New Coin Input
+  m_Script: {fileID: 11500000, guid: a985dccf6d2fb3b4dbf1729c8ff467ae, type: 3}
+  m_Name: New GoExpression
   m_EditorClassIdentifier: 
-  Coin: foocoin
-  Quantity: 454
+  Name: war
+  Description: erera
+  Expression: gegaege

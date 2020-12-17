@@ -1,7 +1,7 @@
 {
-  "name": "com.pylons.unity.sdk.itemschema",
+  "name": "com.pylons.unity.sdk.itemtools",
   "version": "0.1.0",
-  "displayName": "Pylons SDK for Unity (ItemSchema)",
+  "displayName": "Pylons SDK for Unity (ItemTools)",
   "description": "Tools for parsing native blockchain objects into C# types and interacting with those within game logic",
   "unity": "2020.1",
   "author": {
@@ -16,6 +16,6 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/Pylons-tech/pylons_unity_sdk.git",
-    "directory": "PylonsSdk/ItemSchema"
+    "directory": "PylonsSdk/ItemTools"
   }
 }

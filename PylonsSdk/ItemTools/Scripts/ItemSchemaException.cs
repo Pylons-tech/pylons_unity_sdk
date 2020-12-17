@@ -1,4 +1,4 @@
-﻿namespace PylonsSdk.ItemSchema
+﻿namespace PylonsSdk.ItemTools
 {
     public class ItemSchemaException : System.Exception
     {

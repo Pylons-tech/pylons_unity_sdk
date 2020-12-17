@@ -1,4 +1,4 @@
-﻿# Pylons SDK for Unity (ItemSchema) [![openupm](https://img.shields.io/npm/v/com.pylons.unity.sdk.itemschema?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.pylons.unity.sdk.itemschema/)
+﻿# Pylons SDK for Unity (ItemTools) [![openupm](https://img.shields.io/npm/v/com.pylons.unity.sdk.itemtools?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.pylons.unity.sdk.itemtools/)
 > High-level tools for parsing native blockchain items into useful, game-specific types
 
 The Pylons SDK for Unity supplies developers with extensible, easy-to-use tools for communicating with a Pylons wallet from within
@@ -19,7 +19,7 @@ openupm-cli:
 If [openupm-cli](https://github.com/openupm/openupm-cli) is already installed:
 
 ```
-openupm add com.pylons.unity.sdk.itemschema
+openupm add com.pylons.unity.sdk.itemtools
 ```
 
 Manually adding the scope within the Unity Package Manager:

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PylonsSdk.Tx;
+using System;
 using UnityEngine;
 
 namespace PylonsSdk.RecipeBuilder
@@ -7,6 +8,13 @@ namespace PylonsSdk.RecipeBuilder
     [CreateAssetMenu(fileName = "New Item Input", menuName = "Pylons/Recipe/Item Input")]
     public class ItemInputSpec : ScriptableObject
     {
+        public DoubleInputParamSpec[] Doubles;
+        public LongInputParamSpec[] Longs;
+        public StringInputParamSpec[] Strings;
 
+        public ItemInput ToItemInput ()
+        {
+            throw new NotImplementedException("This functionality doesn't exist yet");
+        }
     }
 }

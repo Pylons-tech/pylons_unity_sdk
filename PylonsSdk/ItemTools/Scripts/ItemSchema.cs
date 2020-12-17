@@ -7,7 +7,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using PylonsSdk.Tx;
 
-namespace PylonsSdk.ItemSchema
+namespace PylonsSdk.ItemTools
 {
     public abstract class ItemSchema
     {

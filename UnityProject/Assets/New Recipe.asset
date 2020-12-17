@@ -18,8 +18,13 @@ MonoBehaviour:
   Enabled: 0
   ExecutionDelay: 0
   CoinInputs:
-  - {fileID: 0}
-  - {fileID: 0}
-  ItemInputs: []
-  Outputs: []
+  - {fileID: 11400000, guid: b0005817bff83344d857ffcf5d8ef972, type: 2}
+  - {fileID: 11400000, guid: b0005817bff83344d857ffcf5d8ef972, type: 2}
+  - {fileID: 11400000, guid: da5c34f39d758504487f99b10e43f4a1, type: 2}
+  ItemInputs:
+  - {fileID: 11400000, guid: a65f65d491082fb45b5edc3c4d00e229, type: 2}
+  - {fileID: 11400000, guid: a65f65d491082fb45b5edc3c4d00e229, type: 2}
+  Outputs:
+  - {fileID: 11400000, guid: 3f5477c823dbb6c4caab4b18faea11b9, type: 2}
+  - {fileID: 11400000, guid: 3f5477c823dbb6c4caab4b18faea11b9, type: 2}
   Identities: []

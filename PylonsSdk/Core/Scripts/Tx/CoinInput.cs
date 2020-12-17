@@ -1,15 +1,18 @@
 ﻿using Newtonsoft.Json;
 
-public readonly struct CoinInput
+namespace PylonsSdk.Tx
 {
-    [JsonProperty("Coin")]
-    public readonly string Coin;
-    [JsonProperty("Count")]
-    public readonly long Count;
-
-    public CoinInput(string coin, long count)
+    public readonly struct CoinInput
     {
-        Coin = coin;
-        Count = count;
+        [JsonProperty("Coin")]
+        public readonly string Coin;
+        [JsonProperty("Count")]
+        public readonly long Count;
+
+        public CoinInput(string coin, long count)
+        {
+            Coin = coin;
+            Count = count;
+        }
     }
 }

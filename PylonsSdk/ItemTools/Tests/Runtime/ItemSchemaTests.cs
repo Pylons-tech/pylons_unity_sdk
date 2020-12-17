@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using PylonsSdk.Tx;
 using UnityEngine;
 
-namespace PylonsSdk.ItemSchema.Tests
+namespace PylonsSdk.ItemTools.Tests
 {
     public class ItemSchemaTests
     {

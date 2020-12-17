@@ -1,5 +1,7 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
+using PylonsSdk.Editor;
 
 namespace PylonsSdk.RecipeBuilder.Editor
 {
@@ -50,29 +52,111 @@ namespace PylonsSdk.RecipeBuilder.Editor
                     "This is an approximate value; the smallest possible time interval not less than" +
                     "this will be used to set the recipe's on-chain execution delay value."));
             }
-            using (var refLists = new GUILayout.VerticalScope())
+            using (var inputs = new GUILayout.VerticalScope("box"))
             {
-                using (var coinInputScope = new GUILayout.VerticalScope())
+                EditorGUILayout.LabelField("Inputs");
+                EditorGUILayout.Separator();
+                void coinInputHeader (SerializedProperty arr)
                 {
-                    using (var header = new GUILayout.HorizontalScope())
+                    EditorGUILayout.LabelField(new GUIContent(arr.name, "List of all coins that this recipe consumes when run."));
+                    if (arr.arraySize == 0 || arr.GetArrayElementAtIndex(0).objectReferenceValue != null)
                     {
-                        EditorGUILayout.LabelField(new GUIContent(coinInputs.name, "List of all coins that this recipe consumes when run."));
-                        if (GUILayout.Button(new GUIContent("+", "Add a new coin input to the recipe"))) coinInputs.InsertArrayElementAtIndex(0);
+                        arr.InsertArrayElementAtIndex(0);
+                        arr.GetArrayElementAtIndex(0).objectReferenceValue = null;
                     }
-                    for (int i = 0; i < coinInputs.arraySize; i++)
+                    EditorGUILayout.PropertyField(arr.GetArrayElementAtIndex(0), new GUIContent());
+                }
+                bool coinInputChild (SerializedProperty childProperty)
+                {
+                    if (childProperty.objectReferenceInstanceIDValue != 0)
                     {
-                        var childProperty = coinInputs.GetArrayElementAtIndex(i);
-                        if (childProperty.objectReferenceInstanceIDValue != 0)
+                        using (var pane = new EditorGUILayout.VerticalScope("box"))
                         {
                             var so = new SerializedObject(childProperty.objectReferenceValue);
-                            EditorGUILayout.PropertyField(so.FindProperty("Coin"));
-                            EditorGUILayout.PropertyField(so.FindProperty("Quantity"));
-                            so.ApplyModifiedProperties();
+                            using (var miniPropField = new EditorGUILayout.VerticalScope())
+                                EditorGUILayout.PropertyField(childProperty, new GUIContent());
+                            CoinInputSpecEditor.HandleCoinInput(so);
+                            if (GUILayout.Button("-")) return false;
+                            else
+                            {
+                                so.ApplyModifiedProperties();
+                                return true;
+                            }
                         }
                     }
+                    else return false;
                 }
-                EditorGUILayout.PropertyField(itemInputs);
-                EditorGUILayout.PropertyField(outputs);
+                void itemInputHeader(SerializedProperty arr)
+                {
+                    EditorGUILayout.LabelField(new GUIContent(arr.name, "List of all items that this recipe consumes when run."));
+                    if (arr.arraySize == 0 || arr.GetArrayElementAtIndex(0).objectReferenceValue != null)
+                    {
+                        arr.InsertArrayElementAtIndex(0);
+                        arr.GetArrayElementAtIndex(0).objectReferenceValue = null;
+                    }
+                    EditorGUILayout.PropertyField(arr.GetArrayElementAtIndex(0), new GUIContent());
+                }
+                bool itemInputChild(SerializedProperty childProperty)
+                {
+                    if (childProperty.objectReferenceInstanceIDValue != 0)
+                    {
+                        using (var pane = new EditorGUILayout.VerticalScope("box"))
+                        {
+                            var so = new SerializedObject(childProperty.objectReferenceValue);
+                            using (var miniPropField = new EditorGUILayout.VerticalScope())
+                                EditorGUILayout.PropertyField(childProperty, new GUIContent());
+                            ItemInputSpecEditor.HandleItemInput(so);
+                            if (GUILayout.Button("-")) return false;
+                            else
+                            {
+                                so.ApplyModifiedProperties();
+                                return true;
+                            }
+                        }
+                    }
+                    else return false;
+                }
+                Helpers.ArrayFields(coinInputs, coinInputHeader, coinInputChild);
+                Helpers.ArrayFields(itemInputs, itemInputHeader, itemInputChild);
+            }
+
+            using (var outputScope = new GUILayout.VerticalScope("box"))
+            {
+                EditorGUILayout.LabelField("Outputs");
+                EditorGUILayout.Separator();
+
+                void outputHeader(SerializedProperty arr)
+                {
+                    EditorGUILayout.LabelField(new GUIContent(arr.name, "List of all output tables that this recipe can call."));
+                    if (arr.arraySize == 0 || arr.GetArrayElementAtIndex(0).objectReferenceValue != null)
+                    {
+                        arr.InsertArrayElementAtIndex(0);
+                        arr.GetArrayElementAtIndex(0).objectReferenceValue = null;
+                    }
+                    EditorGUILayout.PropertyField(arr.GetArrayElementAtIndex(0), new GUIContent());
+                }
+
+                bool outputChild(SerializedProperty childProperty)
+                {
+                    if (childProperty.objectReferenceInstanceIDValue != 0)
+                    {
+                        using (var pane = new EditorGUILayout.VerticalScope("box"))
+                        {
+                            var so = new SerializedObject(childProperty.objectReferenceValue);
+                            using (var miniPropField = new EditorGUILayout.VerticalScope())
+                                EditorGUILayout.PropertyField(childProperty, new GUIContent());
+                            OutputTableSpecEditor.HandleOutput(so);
+                            if (GUILayout.Button("-")) return false;
+                            else
+                            {
+                                so.ApplyModifiedProperties();
+                                return true;
+                            }
+                        }
+                    }
+                    else return false;
+                }
+                Helpers.ArrayFields(outputs, outputHeader, outputChild);
             }
             serializedObject.ApplyModifiedProperties();
         }
