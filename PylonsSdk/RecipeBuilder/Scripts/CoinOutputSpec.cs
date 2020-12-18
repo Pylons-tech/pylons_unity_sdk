@@ -8,7 +8,7 @@ namespace PylonsSdk.RecipeBuilder
     public class CoinOutputSpec : ScriptableObject
     {
         public string Coin;
-        public GoExpression Quantity;
+        public GoExpression Count;
 
         public CoinOutput ToCoinOutput()
         {

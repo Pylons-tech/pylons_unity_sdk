@@ -68,7 +68,7 @@ namespace PylonsSdk.RecipeBuilder.Editor
                 }
                 bool coinInputChild (SerializedProperty childProperty)
                 {
-                    if (childProperty.objectReferenceInstanceIDValue != 0)
+                    if (childProperty.objectReferenceValue != null)
                     {
                         using (var pane = new EditorGUILayout.VerticalScope("box"))
                         {
@@ -84,7 +84,7 @@ namespace PylonsSdk.RecipeBuilder.Editor
                             }
                         }
                     }
-                    else return false;
+                    else return true;
                 }
                 void itemInputHeader(SerializedProperty arr)
                 {
@@ -114,7 +114,7 @@ namespace PylonsSdk.RecipeBuilder.Editor
                             }
                         }
                     }
-                    else return false;
+                    else return true;
                 }
                 Helpers.ArrayFields(coinInputs, coinInputHeader, coinInputChild);
                 Helpers.ArrayFields(itemInputs, itemInputHeader, itemInputChild);
@@ -154,7 +154,7 @@ namespace PylonsSdk.RecipeBuilder.Editor
                             }
                         }
                     }
-                    else return false;
+                    else return true;
                 }
                 Helpers.ArrayFields(outputs, outputHeader, outputChild);
             }

@@ -97,7 +97,7 @@ namespace PylonsSdk.RecipeBuilder.Editor
                         }
                     }
                 }
-                else return false;
+                else return true;
             }
 
             bool strChild(SerializedProperty childProperty)
@@ -127,7 +127,7 @@ namespace PylonsSdk.RecipeBuilder.Editor
                         }
                     }
                 }
-                else return false;
+                else return true;
             }
 
             Helpers.ArrayFields(doubles, doubleHeader, numChild<DoubleWeightRangeSpec>);

@@ -54,7 +54,7 @@ namespace PylonsSdk.RecipeBuilder.Editor
                         }
                     }
                 }
-                else return false;
+                else return true;
             }
             bool itemOutputChild(SerializedProperty childProperty)
             {
@@ -74,7 +74,7 @@ namespace PylonsSdk.RecipeBuilder.Editor
                         }
                     }
                 }
-                else return false;
+                else return true;
             }
 
             using (var vertical = new EditorGUILayout.VerticalScope())
