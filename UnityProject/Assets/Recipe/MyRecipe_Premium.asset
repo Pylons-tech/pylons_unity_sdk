@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d1882220ff0a734da875d0c30e4b2fd, type: 3}
+  m_Name: MyRecipe_Premium
+  m_EditorClassIdentifier: 
+  Cookbook: {fileID: 11400000, guid: 91221cdcb186de64d83f99d47388fbc8, type: 2}
+  Name: MyRecipe_Premium
+  Description: Premium recipe example for RecipeBuilder demo
+  Enabled: 1
+  ExecutionDelay: 0
+  CoinInputs:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 0773450bfc64d954e91be8461884103b, type: 2}
+  - {fileID: 11400000, guid: c359bb6f0730b45498d1a57f24b8f602, type: 2}
+  ItemInputs:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 7b3999e85ad38fe40a8faf240e218270, type: 2}
+  - {fileID: 0}
+  Outputs:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: f5021dc99aa42dc4ea0ff12c1e922c3c, type: 2}
+  - {fileID: 11400000, guid: 02803b02847c2f148a23fd30c6291a86, type: 2}
+  Identities: []

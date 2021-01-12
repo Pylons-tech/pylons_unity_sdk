@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 065d081b680f3e54ebc568f76a772cfe, type: 3}
-  m_Name: New Coin Input 1
+  m_Name: MyRecipe_PixieDustInput
   m_EditorClassIdentifier: 
-  Coin: barcoin
-  Quantity: 333
+  Coin: pixie_dust
+  Quantity: 10

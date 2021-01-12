@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a985dccf6d2fb3b4dbf1729c8ff467ae, type: 3}
-  m_Name: New GoExpression
+  m_Script: {fileID: 11500000, guid: aa9825653f52d3a4d9e314479822abe1, type: 3}
+  m_Name: MyCookbook
   m_EditorClassIdentifier: 
-  Name: war
-  Description: erera
-  Expression: gegaege

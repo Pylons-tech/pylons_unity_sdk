@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a97f3060d547f8c4dad8700777092118, type: 3}
-  m_Name: New Output Table
+  m_Name: MyRecipe_OutputTable_Basic
   m_EditorClassIdentifier: 
-  Name: 
-  Description: 
-  Weight: 0
-  CoinOutputs: []
+  Name: MyRecipe basic output table
+  Description: Output table for both MyRecipe and MyRecipe_Premium
+  Weight: 100
+  CoinOutputs:
+  - {fileID: 0}
   ItemInputTransformations: []
   ItemOutputs:
-  - {fileID: 11400000, guid: d5eacbcb03adda74a927c0ee3463d0e2, type: 2}
-  - {fileID: 11400000, guid: d5eacbcb03adda74a927c0ee3463d0e2, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: d68ba0ae1c95ac648860856379a55916, type: 2}

@@ -2,10 +2,8 @@
 
 namespace PylonsSdk.Tx
 {
-    public readonly struct ItemInput
+    public readonly struct ConditionList
     {
-        [JsonProperty("Conditions")]
-        public readonly ConditionList Conditions;
         [JsonProperty("Doubles")]
         public readonly DoubleInputParam[] Doubles;
         [JsonProperty("Longs")]
@@ -13,9 +11,8 @@ namespace PylonsSdk.Tx
         [JsonProperty("Strings")]
         public readonly StringInputParam[] Strings;
 
-        public ItemInput(ConditionList conditions, DoubleInputParam[] doubles, LongInputParam[] longs, StringInputParam[] strings)
+        public ConditionList(DoubleInputParam[] doubles, LongInputParam[] longs, StringInputParam[] strings)
         {
-            Conditions = conditions;
             Doubles = doubles;
             Longs = longs;
             Strings = strings;
