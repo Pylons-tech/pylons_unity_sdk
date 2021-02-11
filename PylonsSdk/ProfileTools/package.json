@@ -1,6 +1,6 @@
 {
   "name": "com.pylons.unity.sdk.profiletools",
-  "version": "0.1.0-preview-2",
+  "version": "0.1.1-preview-1",
   "displayName": "Pylons SDK for Unity (ProfileTools)",
   "description": "Tools for managing and interacting with the state of on-chain user profiles from within game logic",
   "unity": "2020.1",
@@ -10,7 +10,7 @@
     "url": "http://www.pylons.tech"
   },
   "dependencies": {
-    "com.pylons.unity.sdk.core": "0.1.0-preview-2",
+    "com.pylons.unity.sdk.core": "0.1.1-preview-1",
     "jillejr.newtonsoft.json-for-unity": "12.0.301"
   },
   "repository": {
