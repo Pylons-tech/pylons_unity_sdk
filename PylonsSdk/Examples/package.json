@@ -1,6 +1,6 @@
 {
   "name": "com.pylons.unity.sdk.examples",
-  "version": "0.1.0-preview2",
+  "version": "0.1.0-preview-2",
   "displayName": "Pylons SDK for Unity (Examples)",
   "description": "Example code using the features of the Pylons SDK for Unity",
   "unity": "2020.1",
@@ -10,9 +10,9 @@
     "url": "http://www.pylons.tech"
   },
   "dependencies": {
-    "com.pylons.unity.sdk.core": "0.1.0-preview2",
-    "com.pylons.unity.sdk.itemtools": "0.1.0-preview2",
-    "com.pylons.unity.sdk.profiletools": "0.1.0-preview2",
+    "com.pylons.unity.sdk.core": "0.1.0-preview-2",
+    "com.pylons.unity.sdk.itemtools": "0.1.0-preview-2",
+    "com.pylons.unity.sdk.profiletools": "0.1.0-preview-2",
     "jillejr.newtonsoft.json-for-unity": "12.0.301"
   },
   "repository": {
