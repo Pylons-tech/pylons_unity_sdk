@@ -17,6 +17,8 @@ will definitely emerge when this package starts to see external use. Usability i
 
 ## Installation
 
+**Under Project Settings > Player, the scripting backend set for PC, Mac, and Linux Standalone builds must be IL2CPP, and the API compatibility level must be .NET 4.x.** This is required for editor integration with the Pylons dev wallet.
+
 openupm-cli:
 
 If [openupm-cli](https://github.com/openupm/openupm-cli) is already installed:
