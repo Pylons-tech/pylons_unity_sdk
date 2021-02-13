@@ -13,7 +13,7 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "com.pylons.unity.ipc": "0.1.0",
+        "com.pylons.unity.ipc": "0.1.1-preview-1",
         "jillejr.newtonsoft.json-for-unity": "12.0.301"
       }
     },
@@ -22,9 +22,9 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "com.pylons.unity.sdk.core": "0.1.0",
-        "com.pylons.unity.sdk.itemtools": "0.1.0",
-        "com.pylons.unity.sdk.profiletools": "0.1.0",
+        "com.pylons.unity.sdk.core": "0.1.1-preview-1",
+        "com.pylons.unity.sdk.itemtools": "0.1.1-preview-1",
+        "com.pylons.unity.sdk.profiletools": "0.1.1-preview-1",
         "jillejr.newtonsoft.json-for-unity": "12.0.301"
       }
     },
@@ -33,7 +33,7 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "com.pylons.unity.sdk.core": "0.1.0",
+        "com.pylons.unity.sdk.core": "0.1.1-preview-1",
         "jillejr.newtonsoft.json-for-unity": "12.0.301"
       }
     },
@@ -42,7 +42,7 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "com.pylons.unity.sdk.core": "0.1.0",
+        "com.pylons.unity.sdk.core": "0.1.1-preview-1",
         "jillejr.newtonsoft.json-for-unity": "12.0.301"
       }
     },
@@ -51,7 +51,7 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "com.pylons.unity.sdk.core": "0.1.0",
+        "com.pylons.unity.sdk.core": "0.1.1-preview-1",
         "jillejr.newtonsoft.json-for-unity": "12.0.301"
       }
     },

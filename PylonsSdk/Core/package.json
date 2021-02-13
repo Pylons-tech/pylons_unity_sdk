@@ -1,6 +1,6 @@
 {
   "name": "com.pylons.unity.sdk.core",
-  "version": "0.1.1-preview-1",
+  "version": "0.1.1-preview-2",
   "displayName": "Pylons SDK for Unity (Core)",
   "description": "Blockchain and IPC tools for creating games that run on the Pylons chain in Unity",
   "unity": "2020.1",
